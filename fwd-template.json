@@ -46,6 +46,134 @@
             ]
         },
         {
+            "name": "7.1-nginx",
+            "data": {
+                "from": "kooldev/php:7.1",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.1-nginx-prod",
+            "data": {
+                "from": "kooldev/php:7.1-prod",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.1-nginx-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.1-nginx",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.1-nginx-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.1-nginx-prod",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.1-full",
+            "data": {
+                "from": "kooldev/php:7.1-nginx",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.1-full-prod",
+            "data": {
+                "from": "kooldev/php:7.1-nginx-prod",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.1-full-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.1-full",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.1-full-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.1-full-prod",
+                "prod": false,
+                "version": "7.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
             "name": "7.1-wkhtmltopdf",
             "data": {
                 "from": "kooldev/php:7.1",
@@ -118,6 +246,134 @@
             ]
         },
         {
+            "name": "7.2-nginx",
+            "data": {
+                "from": "kooldev/php:7.2",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.2-nginx-prod",
+            "data": {
+                "from": "kooldev/php:7.2-prod",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.2-nginx-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.2-nginx",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.2-nginx-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.2-nginx-prod",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.2-full",
+            "data": {
+                "from": "kooldev/php:7.2-nginx",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.2-full-prod",
+            "data": {
+                "from": "kooldev/php:7.2-nginx-prod",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.2-full-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.2-full",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.2-full-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.2-full-prod",
+                "prod": false,
+                "version": "7.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
             "name": "7.2-wkhtmltopdf",
             "data": {
                 "from": "kooldev/php:7.2",
@@ -186,6 +442,134 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                }
+            ]
+        },
+        {
+            "name": "7.3-nginx",
+            "data": {
+                "from": "kooldev/php:7.3",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.3-nginx-prod",
+            "data": {
+                "from": "kooldev/php:7.3-prod",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "7.3-nginx-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.3-nginx",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.3-nginx-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.3-nginx-prod",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.3-full",
+            "data": {
+                "from": "kooldev/php:7.3-nginx",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.3-full-prod",
+            "data": {
+                "from": "kooldev/php:7.3-nginx-prod",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-full"
+                }
+            ]
+        },
+        {
+            "name": "7.3-full-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:7.3-full",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "7.3-full-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:7.3-full-prod",
+                "prod": false,
+                "version": "7.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
                 }
             ]
         },

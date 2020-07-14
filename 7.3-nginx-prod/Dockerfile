@@ -1,4 +1,4 @@
-FROM kooldev/php:7.4
+FROM kooldev/php:7.3-prod
 
 ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
     NGINX_LISTEN=80 \

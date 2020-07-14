@@ -12,7 +12,8 @@ RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/s
     && sed -i "s|^listen\ \=.*|listen\ \= $PHP_FPM_LISTEN|g" /usr/local/etc/php-fpm.d/zz-docker.conf \
     && echo "listen.owner = kool" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
     && echo "listen.group = kool" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && sed -i "s|^user .*|user\ kool kool;|g" /etc/nginx/nginx.conf
+    && echo "listen.mode = 0666" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+    
 
 COPY supervisor.conf /kool/supervisor.conf
 COPY default.tmpl /kool/default.tmpl

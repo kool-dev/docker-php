@@ -20,9 +20,6 @@ jobs:
         docker build -t kooldev/php:${{ matrix.version }}-wkhtmltopdf ${{ matrix.version }}-wkhtmltopdf
         docker build -t kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod ${{ matrix.version }}-wkhtmltopdf-prod
 
-    - name: Build images nginx
-      if: matrix.version == '7.4'
-      run: |
         docker build -t kooldev/php:${{ matrix.version }}-nginx ${{ matrix.version }}-nginx
         docker build -t kooldev/php:${{ matrix.version }}-nginx-prod ${{ matrix.version }}-nginx-prod
         docker build -t kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf ${{ matrix.version }}-nginx-wkhtmltopdf
@@ -44,9 +41,6 @@ jobs:
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix php -m
         done
 
-    - name: Test docker images nginx
-      if: matrix.version == '7.4'
-      run: |
         for suffix in -nginx -nginx-prod -nginx-wkhtmltopdf -nginx-wkhtmltopdf-prod -full -full-prod -full-wkhtmltopdf -full-wkhtmltopdf-prod; do
           docker run kooldev/php:${{ matrix.version }}$suffix php -v
           docker run kooldev/php:${{ matrix.version }}$suffix composer -V
@@ -70,13 +64,6 @@ jobs:
         docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf
         docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod
 
-    - name: Push to Hub nginx
-      if: github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.version == '7.4'
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push kooldev/php:${{ matrix.version }}-nginx
         docker push kooldev/php:${{ matrix.version }}-nginx-prod
         docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf
