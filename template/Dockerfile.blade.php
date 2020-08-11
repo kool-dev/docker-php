@@ -7,6 +7,7 @@ ENV ASUSER= \
     ENABLE_XDEBUG=false \
 @endunless
     PHP_MEMORY_LIMIT=256M \
+    PHP_MAX_INPUT_VARS=1000 \
     PHP_UPLOAD_MAX_FILESIZE=25M \
     PHP_POST_MAX_SIZE=25M \
     ENTRYPOINT=entrypoint.php.sh
