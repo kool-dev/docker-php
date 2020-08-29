@@ -8,17 +8,22 @@ ENV ASUSER= \
     PHP_MAX_INPUT_VARS=1000 \
     PHP_UPLOAD_MAX_FILESIZE=25M \
     PHP_POST_MAX_SIZE=25M \
+    PHP_MAX_EXECUTION_TIME=30 \
+    PHP_FPM_LISTEN=9000 \
+    PHP_FPM_MAX_CHILDREN=10 \
+    PHP_FPM_REQUEST_TERMINATE_TIMEOUT=60 \
     ENTRYPOINT=entrypoint.php.sh
 
 WORKDIR /app
 
 RUN adduser -D -u 1337 kool \
+    && addgroup kool www-data \
     # dockerize
     && curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz | tar xz \
     && mv dockerize /usr/local/bin/dockerize \
     # deps
-    && apk --no-cache add su-exec bash git openssh-client icu shadow procps \
-        freetype libpng libjpeg-turbo libzip-dev imagemagick \
+    && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
+        freetype libpng libjpeg-turbo libzip-dev ghostscript imagemagick \
         jpegoptim optipng pngquant gifsicle libldap \
     # build-deps
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
@@ -49,7 +54,6 @@ RUN adduser -D -u 1337 kool \
         xml \
         zip \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
-    && sed -i "s/user\ \=.*/user\ \= kool/g" /usr/local/etc/php-fpm.d/www.conf \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && su-exec kool composer global require hirak/prestissimo \
@@ -58,10 +62,11 @@ RUN adduser -D -u 1337 kool \
     && rm -rf /var/cache/apk/* /tmp/* /home/kool/.composer/cache
 
 COPY kool.ini /kool/kool.tmpl
+COPY zz-docker.conf /kool/zz-docker.tmpl
 COPY entrypoint /kool/entrypoint
 RUN chmod +x /kool/entrypoint
 
 EXPOSE 9000
 
-ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "/kool/entrypoint" ]
+ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "-template", "/kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf", "/kool/entrypoint" ]
 CMD [ "php-fpm" ]

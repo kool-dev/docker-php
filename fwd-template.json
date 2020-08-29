@@ -20,6 +20,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -42,6 +46,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -220,6 +228,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -242,6 +254,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -420,6 +436,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -442,6 +462,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -620,6 +644,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
@@ -642,6 +670,10 @@
                 {
                     "name": "kool.ini",
                     "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
                 }
             ]
         },
