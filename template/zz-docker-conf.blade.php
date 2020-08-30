@@ -6,7 +6,7 @@ daemonize = no
 ; Note: The user is mandatory. If the group is not set, the default user's group
 ;       will be used.
 user = kool
-group = www-data
+group = kool
 
 ; The address on which to accept FastCGI requests.
 ; Valid syntaxes are:
@@ -26,9 +26,9 @@ listen = @{{ .Env.PHP_FPM_LISTEN }}
 ; and group can be specified either by name or by their numeric IDs.
 ; Default Values: user and group are set as the running user
 ;                 mode is set to 0660
-listen.owner = kool
+listen.owner = www-data
 listen.group = www-data
-{{-- listen.mode = 0666 --}}
+listen.mode = 0666
 
 ; The number of child processes to be created when pm is set to 'static' and the
 ; maximum number of child processes when pm is set to 'dynamic' or 'ondemand'.
