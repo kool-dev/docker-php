@@ -1,6 +1,8 @@
 name: CI
 
-on: [push]
+on: [ push, workflow_dispatch ]
+env:
+  DOCKER_BUILDKIT: 1
 
 jobs:
   build:
