@@ -10,8 +10,9 @@ ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
 RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/supervisord_static_0.6.3_linux_amd64 -o /usr/local/bin/supervisord \
     && chmod +x /usr/local/bin/supervisord \
     && apk add --no-cache nginx \
-    && sed -i "s|^user .*|user\ kool;|g" /etc/nginx/nginx.conf \
+    && sed -i "s|^user .*|user\ kool kool;|g" /etc/nginx/nginx.conf \
     && chown -R kool:kool /var/lib/nginx \
+    && chmod 770 /var/lib/nginx/tmp \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
