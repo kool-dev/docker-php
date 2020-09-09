@@ -1,6 +1,8 @@
 name: CI
 
-on: [push]
+on: [ push, workflow_dispatch ]
+env:
+  DOCKER_BUILDKIT: 1
 
 jobs:
   build:
@@ -73,3 +75,11 @@ jobs:
         docker push kooldev/php:${{ matrix.version }}-full-prod
         docker push kooldev/php:${{ matrix.version }}-full-wkhtmltopdf
         docker push kooldev/php:${{ matrix.version }}-full-wkhtmltopdf-prod
+
+    - name: Trigger build kool-dev/docker-wordpress
+      uses: benc-uk/workflow-dispatch@v1
+      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+      with:
+        workflow: CI
+        repo: kool-dev/docker-wordpress
+        token: ${{ secrets.WORKFLOW_TOKEN }}
