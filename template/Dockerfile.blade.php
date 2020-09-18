@@ -3,6 +3,7 @@ FROM {{ $from }}
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_MEMORY_LIMIT=-1 \
 @unless ($prod)
     ENABLE_XDEBUG=false \
 @endunless
