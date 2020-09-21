@@ -27,10 +27,13 @@ jobs:
 
       - name: Build
         run: |
-          docker build -t kooldev/php:${{ matrix.version }} ${{ matrix.version }}
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }} \
+            ${{ matrix.version }}
 
-          docker image ls
-          ls /tmp/.buildx-cache
+      # - name: Build (nginx)
 
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
