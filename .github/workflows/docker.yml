@@ -33,6 +33,24 @@ jobs:
             --tag kooldev/php:${{ matrix.version }} \
             ${{ matrix.version }}
 
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-prod \
+            ${{ matrix.version }}-prod
+
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf \
+            ${{ matrix.version }}-wkhtmltopdf
+
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod \
+            ${{ matrix.version }}-wkhtmltopdf-prod
+
       # - name: Build (nginx)
 
       # - name: Login to DockerHub
