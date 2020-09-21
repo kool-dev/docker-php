@@ -51,7 +51,31 @@ jobs:
             --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod \
             ${{ matrix.version }}-wkhtmltopdf-prod
 
-      # - name: Build (nginx)
+      - name: Build (nginx)
+        run: |
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-nginx \
+            ${{ matrix.version }}-nginx
+
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-nginx-prod \
+            ${{ matrix.version }}-nginx-prod
+
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf \
+            ${{ matrix.version }}-nginx-wkhtmltopdf
+
+          docker build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache \
+            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf-prod \
+            ${{ matrix.version }}-nginx-wkhtmltopdf-prod
 
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
