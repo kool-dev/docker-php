@@ -1,85 +1,40 @@
 name: CI
 
-on: [ push, workflow_dispatch ]
-env:
-  DOCKER_BUILDKIT: 1
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ 7.1, 7.2, 7.3, 7.4 ]
+        version: [7.1, 7.2, 7.3, 7.4]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Build images
-      run: |
-        docker build --pull -t kooldev/php:${{ matrix.version }} ${{ matrix.version }}
-        docker build --pull -t kooldev/php:${{ matrix.version }}-prod ${{ matrix.version }}-prod
-        docker build -t kooldev/php:${{ matrix.version }}-wkhtmltopdf ${{ matrix.version }}-wkhtmltopdf
-        docker build -t kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod ${{ matrix.version }}-wkhtmltopdf-prod
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-        docker build -t kooldev/php:${{ matrix.version }}-nginx ${{ matrix.version }}-nginx
-        docker build -t kooldev/php:${{ matrix.version }}-nginx-prod ${{ matrix.version }}-nginx-prod
-        docker build -t kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf ${{ matrix.version }}-nginx-wkhtmltopdf
-        docker build -t kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf-prod ${{ matrix.version }}-nginx-wkhtmltopdf-prod
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-buildx-${{ matrix.version }}-${{ github.sha }}
+          restore-keys: docker-buildx-${{ matrix.version }}-
 
-        docker build -t kooldev/php:${{ matrix.version }}-full ${{ matrix.version }}-full
-        docker build -t kooldev/php:${{ matrix.version }}-full-prod ${{ matrix.version }}-full-prod
-        docker build -t kooldev/php:${{ matrix.version }}-full-wkhtmltopdf ${{ matrix.version }}-full-wkhtmltopdf
-        docker build -t kooldev/php:${{ matrix.version }}-full-wkhtmltopdf-prod ${{ matrix.version }}-full-wkhtmltopdf-prod
+      - name: Build
+        run: |
+          docker buildx build \
+            --tag kooldev/php:${{ matrix.version }}
+            --cache-from type=local,src=/tmp/.buildx-cache
+            --cache-to type=local,dest=/tmp/.buildx-cache
+            --file ${{ matrix.version }}/Dockerfile
 
-    - name: Test docker images
-      run: |
-        for suffix in '' -prod -wkhtmltopdf -wkhtmltopdf-prod; do
-          docker run kooldev/php:${{ matrix.version }}$suffix php -v
-          docker run kooldev/php:${{ matrix.version }}$suffix composer -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix php -v
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix composer -V
-          docker run kooldev/php:${{ matrix.version }}$suffix php -m
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix php -m
-        done
+      # - name: Login to DockerHub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-        for suffix in -nginx -nginx-prod -nginx-wkhtmltopdf -nginx-wkhtmltopdf-prod -full -full-prod -full-wkhtmltopdf -full-wkhtmltopdf-prod; do
-          docker run kooldev/php:${{ matrix.version }}$suffix php -v
-          docker run kooldev/php:${{ matrix.version }}$suffix composer -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix php -v
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix composer -V
-          docker run kooldev/php:${{ matrix.version }}$suffix php -m
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix php -m
-          docker run kooldev/php:${{ matrix.version }}$suffix nginx -v
-          docker run kooldev/php:${{ matrix.version }}$suffix supervisord version
-        done
-
-    - name: Push to Hub
-      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-        docker push kooldev/php:${{ matrix.version }}
-        docker push kooldev/php:${{ matrix.version }}-prod
-        docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf
-        docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod
-
-        docker push kooldev/php:${{ matrix.version }}-nginx
-        docker push kooldev/php:${{ matrix.version }}-nginx-prod
-        docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf
-        docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf-prod
-
-        docker push kooldev/php:${{ matrix.version }}-full
-        docker push kooldev/php:${{ matrix.version }}-full-prod
-        docker push kooldev/php:${{ matrix.version }}-full-wkhtmltopdf
-        docker push kooldev/php:${{ matrix.version }}-full-wkhtmltopdf-prod
-
-    - name: Trigger build kool-dev/docker-wordpress
-      uses: benc-uk/workflow-dispatch@v1
-      if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-      with:
-        workflow: CI
-        repo: kool-dev/docker-wordpress
-        token: ${{ secrets.WORKFLOW_TOKEN }}
+    # - name: Push to DockerHub
