@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         version: [7.1, 7.2, 7.3, 7.4]
+        type: ['', '-prod']
 
     steps:
       - name: Checkout code
@@ -28,54 +29,30 @@ jobs:
       - name: Build
         run: |
           docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }} \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }} \
-            --tag kooldev/php:${{ matrix.version }} \
-            ${{ matrix.version }}
+            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
+            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
+            --tag kooldev/php:${{ matrix.version }}${{ matrix.type }} \
+            ${{ matrix.version }}${{ matrix.type }}
 
           docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-prod \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-prod \
-            --tag kooldev/php:${{ matrix.version }}-prod \
-            ${{ matrix.version }}-prod
-
-          docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf \
-            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf \
-            ${{ matrix.version }}-wkhtmltopdf
-
-          docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf-prod \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf-prod \
-            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf-prod \
-            ${{ matrix.version }}-wkhtmltopdf-prod
+            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
+            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
+            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
+            ${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
 
       - name: Build (nginx)
         run: |
           docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx \
-            --tag kooldev/php:${{ matrix.version }}-nginx \
-            ${{ matrix.version }}-nginx
+            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
+            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
+            --tag kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} \
+            ${{ matrix.version }}-nginx${{ matrix.type }}
 
           docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-prod \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-prod \
-            --tag kooldev/php:${{ matrix.version }}-nginx-prod \
-            ${{ matrix.version }}-nginx-prod
-
-          docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf \
-            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf \
-            ${{ matrix.version }}-nginx-wkhtmltopdf
-
-          docker build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf-prod \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf-prod \
-            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf-prod \
-            ${{ matrix.version }}-nginx-wkhtmltopdf-prod
+            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
+            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
+            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
+            ${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
       # - name: Login to DockerHub
       #   uses: docker/login-action@v1
