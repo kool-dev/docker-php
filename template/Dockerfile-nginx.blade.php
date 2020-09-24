@@ -11,8 +11,13 @@ RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/s
     && chmod +x /usr/local/bin/supervisord \
     && apk add --no-cache nginx \
     && sed -i "s|^user .*|user\ kool kool;|g" /etc/nginx/nginx.conf \
+@if (version_compare($version, '7.2', '>='))
     && chown -R kool:kool /var/lib/nginx \
     && chmod 770 /var/lib/nginx/tmp \
+@else
+    && chown -R kool:kool /var/tmp/nginx \
+    && chmod 770 /var/tmp/nginx \
+@endif
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
