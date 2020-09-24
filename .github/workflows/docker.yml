@@ -23,8 +23,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: docker-buildx-${{ matrix.version }}-${{ github.sha }}
-          restore-keys: docker-buildx-${{ matrix.version }}-
+          key: docker-buildx-${{ matrix.version }}${{ matrix.type }}-${{ github.sha }}
+          restore-keys: docker-buildx-${{ matrix.version }}${{ matrix.type }}-
 
       - name: Build
         run: |
@@ -54,10 +54,42 @@ jobs:
             --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
             ${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Tests
+        run: |
+          for suffix in '' -wkhtmltopdf -nginx -nginx-wkhtmltopdf; do
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
+            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
+            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
+            docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
+          done
 
-    # - name: Push to DockerHub
+          for suffix in -nginx -nginx-wkhtmltopdf; do
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} nginx -v
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} supervisord version
+          done
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push to DockerHub
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        run: |
+          docker push kooldev/php:${{ matrix.version }}${{ matrix.type }}
+          docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
+
+          docker push kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+          docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
+
+      - name: Trigger build on kool-dev/docker-wordpress
+        uses: benc-uk/workflow-dispatch@v1
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          workflow: CI
+          repo: kool-dev/docker-wordpress
+          token: ${{ secrets.WORKFLOW_TOKEN }}
