@@ -1,6 +1,6 @@
 # Description
 
-![CI](https://github.com/kool-dev/docker-php/workflows/CI/badge.svg)
+![CI/CD](https://github.com/kool-dev/docker-php/workflows/CI/CD/badge.svg)
 
 Minimal PHP Docker image focused on Laravel applications. It's use is intended for [kool.dev](https://github.com/kool-dev/kool), but can fit in any other PHP use-case.
 
