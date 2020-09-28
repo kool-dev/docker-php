@@ -89,7 +89,7 @@ jobs:
           docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
       - name: Trigger build on kool-dev/docker-wordpress
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@v1.1
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           workflow: CI
