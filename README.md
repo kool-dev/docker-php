@@ -52,21 +52,21 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 
 ## Environment Variables
 
-Variable | Description | Default Value
+Variable | Default Value | Description
 --- | --- | ---
-**ASUSER** | Changes the user id that executes the commands | `-0`
-**UID** | Changes the user id that executes the commands **(ignored if ASUSER is provided)** | `-0`
-**COMPOSER_ALLOW_SUPERUSER** | Allows composer to run with super user | `1`
-**COMPOSER_MEMORY_LIMIT** | Changes composer memory limit | `-1`
-**ENABLE_XDEBUG** | Enables the Xdebug extension **(only prod versions)** | `false`
-**PHP_MEMORY_LIMIT** | Changes PHP memory limit | `256M`
-**PHP_MAX_INPUT_VARS** | Changes how many input variables may be accepted on PHP | `1000` 
-**PHP_UPLOAD_MAX_FILESIZE** | Changes PHP maximum size of an uploaded file | `25M`
-**PHP_POST_MAX_SIZE** | Changes PHP max size of post data allowed | `25M`
-**PHP_MAX_EXECUTION_TIME** | Changes PHP maximum time is allowed to run a script | `30`
-**PHP_FPM_LISTEN** | Changes the PORT address of the FastCGI requests | `9000`
-**PHP_FPM_MAX_CHILDREN** | Changes the number of child processes to be used on FPM | `10`
-**PHP_FPM_REQUEST_TERMINATE_TIMEOUT** | Changes FPM timeout to serve a single request | `60`
+**ASUSER** | `-0` | Changes the user id that executes the commands
+**UID** | `-0` | Changes the user id that executes the commands **(ignored if ASUSER is provided)**
+**COMPOSER_ALLOW_SUPERUSER** | `1` | Allows composer to run with super user
+**COMPOSER_MEMORY_LIMIT** | `-1` | Changes composer memory limit
+**ENABLE_XDEBUG** | `false` | Enables the Xdebug extension **(only prod versions)**
+**PHP_MEMORY_LIMIT** | `256M` | Changes PHP memory limit
+**PHP_MAX_INPUT_VARS** | `1000`  | Changes how many input variables may be accepted on PHP
+**PHP_UPLOAD_MAX_FILESIZE** | `25M` | Changes PHP maximum size of an uploaded file
+**PHP_POST_MAX_SIZE** | `25M` | Changes PHP max size of post data allowed
+**PHP_MAX_EXECUTION_TIME** | `30` | Changes PHP maximum time is allowed to run a script
+**PHP_FPM_LISTEN** | `9000` | Changes the PORT address of the FastCGI requests
+**PHP_FPM_MAX_CHILDREN** | `10` | Changes the number of child processes to be used on FPM
+**PHP_FPM_REQUEST_TERMINATE_TIMEOUT** | `60` | Changes FPM timeout to serve a single request
 
 ## Usage
 
