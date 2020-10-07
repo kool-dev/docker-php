@@ -78,8 +78,8 @@ Variable | Default Value | Description
 **NGINX_CLIENT_MAX_BODY_SIZE** | `25M` | Changes maximum allowed size of the client request body
 **NGINX_PHP_FPM** | `unix:/run/php-fpm.sock` | Changes the address of a FastCGI server
 **NGINX_FASTCGI_READ_TIMEOUT** | `60s` | Changes a timeout for reading a response from the FastCGI server
-**NGINX_FASTCGI_BUFFERS** | `'8 8k'` | Changes the number and size of the buffers used for reading a response
-**NGINX_FASTCGI_BUFFER_SIZE** | `'16k'` | Changes the size of the buffer used for reading the first part of the response received
+**NGINX_FASTCGI_BUFFERS** | `8 8k` | Changes the number and size of the buffers used for reading a response
+**NGINX_FASTCGI_BUFFER_SIZE** | `16k` | Changes the size of the buffer used for reading the first part of the response received
 
 ## Usage
 
