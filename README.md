@@ -54,8 +54,8 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 
 Variable | Default Value | Description
 --- | --- | ---
-**ASUSER** | `-0` | Changes the user id that executes the commands
-**UID** | `-0` | Changes the user id that executes the commands **(ignored if ASUSER is provided)**
+**ASUSER** | `0` | Changes the user id that executes the commands
+**UID** | `0` | Changes the user id that executes the commands **(ignored if ASUSER is provided)**
 **COMPOSER_ALLOW_SUPERUSER** | `1` | Allows composer to run with super user
 **COMPOSER_MEMORY_LIMIT** | `-1` | Changes composer memory limit
 **ENABLE_XDEBUG** | `false` | Enables the Xdebug extension
