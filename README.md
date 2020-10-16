@@ -12,10 +12,6 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 - [7.1-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-prod/Dockerfile)
 - [7.1-nginx](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx/Dockerfile)
 - [7.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-prod/Dockerfile)
-- [7.1-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.1-wkhtmltopdf/Dockerfile)
-- [7.1-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-wkhtmltopdf-prod/Dockerfile)
-- [7.1-nginx-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-wkhtmltopdf/Dockerfile)
-- [7.1-nginx-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-wkhtmltopdf-prod/Dockerfile)
 
 ### 7.2
 
@@ -23,10 +19,6 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 - [7.2-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-prod/Dockerfile)
 - [7.2-nginx](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx/Dockerfile)
 - [7.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx-prod/Dockerfile)
-- [7.2-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.2-wkhtmltopdf/Dockerfile)
-- [7.2-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-wkhtmltopdf-prod/Dockerfile)
-- [7.2-nginx-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx-wkhtmltopdf/Dockerfile)
-- [7.2-nginx-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx-wkhtmltopdf-prod/Dockerfile)
 
 ### 7.3
 
@@ -34,10 +26,6 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 - [7.3-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-prod/Dockerfile)
 - [7.3-nginx](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx/Dockerfile)
 - [7.3-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx-prod/Dockerfile)
-- [7.3-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.3-wkhtmltopdf/Dockerfile)
-- [7.3-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-wkhtmltopdf-prod/Dockerfile)
-- [7.3-nginx-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx-wkhtmltopdf/Dockerfile)
-- [7.3-nginx-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx-wkhtmltopdf-prod/Dockerfile)
 
 ### 7.4
 
@@ -45,10 +33,6 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 - [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile)
 - [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile)
 - [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile)
-- [7.4-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.4-wkhtmltopdf/Dockerfile)
-- [7.4-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-wkhtmltopdf-prod/Dockerfile)
-- [7.4-nginx-wkhtmltopdf](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-wkhtmltopdf/Dockerfile)
-- [7.4-nginx-wkhtmltopdf-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-wkhtmltopdf-prod/Dockerfile)
 
 ## Environment Variables
 
