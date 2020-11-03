@@ -47,3 +47,12 @@ docker build -t kooldev/php:7.4-nginx 7.4-nginx
 docker build -t kooldev/php:7.4-nginx-prod 7.4-nginx-prod
 docker build -t kooldev/php:7.4-nginx-wkhtmltopdf 7.4-nginx-wkhtmltopdf
 docker build -t kooldev/php:7.4-nginx-wkhtmltopdf-prod 7.4-nginx-wkhtmltopdf-prod
+
+docker build --pull -t kooldev/php:8.0 8.0
+docker build --pull -t kooldev/php:8.0-prod 8.0-prod
+docker build -t kooldev/php:8.0-wkhtmltopdf 8.0-wkhtmltopdf
+docker build -t kooldev/php:8.0-wkhtmltopdf-prod 8.0-wkhtmltopdf-prod
+docker build -t kooldev/php:8.0-nginx 8.0-nginx
+docker build -t kooldev/php:8.0-nginx-prod 8.0-nginx-prod
+docker build -t kooldev/php:8.0-nginx-wkhtmltopdf 8.0-nginx-wkhtmltopdf
+docker build -t kooldev/php:8.0-nginx-wkhtmltopdf-prod 8.0-nginx-wkhtmltopdf-prod

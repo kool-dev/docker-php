@@ -608,6 +608,158 @@
                     "path": "template/Dockerfile-wkhtmltopdf"
                 }
             ]
+        },
+        {
+            "name": "8.0",
+            "data": {
+                "from": "php:8.0-rc-fpm-alpine",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-prod",
+            "data": {
+                "from": "php:8.0-rc-fpm-alpine",
+                "prod": true,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx",
+            "data": {
+                "from": "kooldev/php:8.0",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.0-prod",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:8.0-nginx",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-nginx-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:8.0-nginx-prod",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-wkhtmltopdf",
+            "data": {
+                "from": "kooldev/php:8.0",
+                "prod": false,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
+        },
+        {
+            "name": "8.0-wkhtmltopdf-prod",
+            "data": {
+                "from": "kooldev/php:8.0-prod",
+                "prod": true,
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-wkhtmltopdf"
+                }
+            ]
         }
     ]
 }

@@ -1,10 +1,9 @@
-FROM php:7.3-fpm-alpine
+FROM php:8.0-rc-fpm-alpine
 
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1 \
-    ENABLE_XDEBUG=false \
     PHP_MEMORY_LIMIT=256M \
     PHP_MAX_INPUT_VARS=1000 \
     PHP_UPLOAD_MAX_FILESIZE=25M \
@@ -33,12 +32,9 @@ RUN adduser -D -u 1337 kool \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
-        imagemagick-dev openldap-dev  \
+        imagemagick-dev openldap-dev oniguruma-dev \
     # php-ext
-    && docker-php-ext-configure gd \
-        --with-freetype-dir=/usr/include/ \
-        --with-png-dir=/usr/include/ \
-        --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
@@ -48,6 +44,7 @@ RUN adduser -D -u 1337 kool \
         intl \
         ldap \
         mbstring \
+        opcache \
         pcntl \
         pdo \
         pdo_mysql \
@@ -58,11 +55,9 @@ RUN adduser -D -u 1337 kool \
     && pickle install imagick \
     && pickle install redis \
     # temporarily disabled
-    # && pickle install xdebug \
-    # temporarily disabled
     # && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
+    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && su-exec kool composer global require hirak/prestissimo \

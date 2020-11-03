@@ -24,6 +24,9 @@ RUN adduser -D -u 1337 kool \
     # dockerize
     && curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz | tar xz \
     && mv dockerize /usr/local/bin/dockerize \
+    # pickle
+    && curl -L https://github.com/FriendsOfPHP/pickle/releases/latest/download/pickle.phar -o /usr/local/bin/pickle \
+    && chmod +x /usr/local/bin/pickle \
     # deps
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
         freetype libpng libjpeg-turbo libzip-dev ghostscript imagemagick \
@@ -43,8 +46,6 @@ RUN adduser -D -u 1337 kool \
         --with-jpeg-dir=/usr/include/ \
 @endif
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
-    && pecl install imagick-3.4.4 redis {{ ! $prod ? 'xdebug' : '' }} \
-    && docker-php-ext-enable imagick redis \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         calendar \
@@ -63,6 +64,15 @@ RUN adduser -D -u 1337 kool \
         soap \
         xml \
         zip \
+    && pickle install imagick \
+    && pickle install redis \
+@if (! $prod )
+    # temporarily disabled
+    # && pickle install xdebug \
+@endif
+    # temporarily disabled
+    # && docker-php-ext-enable imagick \
+    && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \

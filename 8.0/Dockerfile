@@ -1,4 +1,4 @@
-FROM php:7.3-fpm-alpine
+FROM php:8.0-rc-fpm-alpine
 
 ENV ASUSER= \
     UID= \
@@ -33,12 +33,9 @@ RUN adduser -D -u 1337 kool \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
-        imagemagick-dev openldap-dev  \
+        imagemagick-dev openldap-dev oniguruma-dev \
     # php-ext
-    && docker-php-ext-configure gd \
-        --with-freetype-dir=/usr/include/ \
-        --with-png-dir=/usr/include/ \
-        --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
