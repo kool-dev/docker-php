@@ -63,10 +63,9 @@ RUN adduser -D -u 1337 kool \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && su-exec kool composer global require hirak/prestissimo \
     # cleanup
     && apk del .build-deps \
-    && rm -rf /var/cache/apk/* /tmp/* /home/kool/.composer/cache
+    && rm -rf /var/cache/apk/* /tmp/*
 
 COPY kool.ini /kool/kool.tmpl
 COPY zz-docker.conf /kool/zz-docker.tmpl
