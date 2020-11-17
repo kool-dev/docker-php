@@ -21,8 +21,9 @@ RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/s
 
 COPY supervisor.conf /kool/supervisor.conf
 COPY default.tmpl /kool/default.tmpl
+COPY entrypoint /kool/entrypoint
+RUN chmod +x /kool/entrypoint
 
 EXPOSE 80
 
-ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "-template", "/kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf", "-template", "/kool/default.tmpl:/etc/nginx/conf.d/default.conf", "/kool/entrypoint" ]
 CMD [ "supervisord", "-c", "/kool/supervisor.conf" ]

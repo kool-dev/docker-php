@@ -66,5 +66,5 @@ RUN chmod +x /kool/entrypoint
 
 EXPOSE 9000
 
-ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "-template", "/kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf", "/kool/entrypoint" ]
+ENTRYPOINT [ "/kool/entrypoint" ]
 CMD [ "php-fpm" ]
