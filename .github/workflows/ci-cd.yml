@@ -81,6 +81,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
-          workflow: CI
+          workflow: CI/CD
           repo: kool-dev/docker-wordpress
           token: ${{ secrets.WORKFLOW_TOKEN }}
