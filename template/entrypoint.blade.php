@@ -27,7 +27,7 @@ if [ ! -z "$ENTRYPOINT" ] && [ -f "$ENTRYPOINT" ]; then
     bash $ENTRYPOINT
 fi
 
-if [ "$1" = "sh" ] || [ "$1" = "bash" ] || [ "$1" = "php-fpm" ] {!! $nginx ? '|| [ "$1" = "nginx" ] || [ "$1" = "supervisord"' : '' !!} ]; then
+if [ "$1" = "sh" ] || [ "$1" = "bash" ] || [ "$1" = "php-fpm" ] {!! $nginx ? '|| [ "$1" = "nginx" ] || [ "$1" = "supervisord" ]' : '' !!}; then
     exec "$@"
 else
     exec su-exec kool "$@"

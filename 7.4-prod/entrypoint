@@ -16,7 +16,7 @@ if [ ! -z "$ENTRYPOINT" ] && [ -f "$ENTRYPOINT" ]; then
     bash $ENTRYPOINT
 fi
 
-if [ "$1" = "sh" ] || [ "$1" = "bash" ] || [ "$1" = "php-fpm" ]  ]; then
+if [ "$1" = "sh" ] || [ "$1" = "bash" ] || [ "$1" = "php-fpm" ] ; then
     exec "$@"
 else
     exec su-exec kool "$@"
