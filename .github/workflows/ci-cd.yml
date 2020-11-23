@@ -30,14 +30,14 @@ jobs:
           docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
             --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
-            --output type=docker \
+            --output type=image \
             --tag kooldev/php:${{ matrix.version }}${{ matrix.type }} \
             ${{ matrix.version }}${{ matrix.type }}
 
           docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
             --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
-            --output type=docker \
+            --output type=image \
             --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
             ${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
 
@@ -46,14 +46,14 @@ jobs:
           docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
             --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
-            --output type=docker \
+            --output type=image \
             --tag kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} \
             ${{ matrix.version }}-nginx${{ matrix.type }}
 
           docker buildx build \
             --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
             --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
-            --output type=docker \
+            --output type=image \
             --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
             ${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
