@@ -24,23 +24,15 @@ jobs:
             --tag kooldev/php:${{ matrix.version }}${{ matrix.type }} \
             ${{ matrix.version }}${{ matrix.type }}
 
-          docker build \
-            --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
-            ${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
-
       - name: Build (nginx)
         run: |
           docker build \
             --tag kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} \
             ${{ matrix.version }}-nginx${{ matrix.type }}
 
-          docker build \
-            --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
-            ${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
-
       - name: Tests
         run: |
-          for suffix in '' -wkhtmltopdf -nginx -nginx-wkhtmltopdf; do
+          for suffix in '' -nginx; do
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer2 -V
@@ -51,10 +43,8 @@ jobs:
             docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
           done
 
-          for suffix in -nginx -nginx-wkhtmltopdf; do
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} nginx -v
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} supervisord version
-          done
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -67,10 +57,7 @@ jobs:
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         run: |
           docker push kooldev/php:${{ matrix.version }}${{ matrix.type }}
-          docker push kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
-
           docker push kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
-          docker push kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
   trigger-wordpress:
     name: Trigger docker-wordpress
