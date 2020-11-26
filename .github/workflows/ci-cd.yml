@@ -2,6 +2,9 @@ name: CI/CD
 
 on: [push, workflow_dispatch]
 
+env:
+  DOCKER_BUILDKIT: 1
+
 jobs:
   build:
     name: Build
@@ -15,45 +18,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-buildx-${{ matrix.version }}${{ matrix.type }}-${{ github.sha }}
-          restore-keys: docker-buildx-${{ matrix.version }}${{ matrix.type }}-
-
       - name: Build
         run: |
-          docker buildx build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}${{ matrix.type }} \
-            --output type=docker \
+          docker build \
             --tag kooldev/php:${{ matrix.version }}${{ matrix.type }} \
             ${{ matrix.version }}${{ matrix.type }}
 
-          docker buildx build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
-            --output type=docker \
+          docker build \
             --tag kooldev/php:${{ matrix.version }}-wkhtmltopdf${{ matrix.type }} \
             ${{ matrix.version }}-wkhtmltopdf${{ matrix.type }}
 
       - name: Build (nginx)
         run: |
-          docker buildx build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx${{ matrix.type }} \
-            --output type=docker \
+          docker build \
             --tag kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} \
             ${{ matrix.version }}-nginx${{ matrix.type }}
 
-          docker buildx build \
-            --cache-from type=local,src=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
-            --cache-to type=local,dest=/tmp/.buildx-cache/${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
-            --output type=docker \
+          docker build \
             --tag kooldev/php:${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }} \
             ${{ matrix.version }}-nginx-wkhtmltopdf${{ matrix.type }}
 
@@ -62,8 +43,10 @@ jobs:
           for suffix in '' -wkhtmltopdf -nginx -nginx-wkhtmltopdf; do
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer2 -V
             docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
             docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
+            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer2 -V
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
             docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
           done
@@ -98,6 +81,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
-          workflow: CI
+          workflow: CI/CD
           repo: kool-dev/docker-wordpress
           token: ${{ secrets.WORKFLOW_TOKEN }}

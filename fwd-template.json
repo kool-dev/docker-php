@@ -6,6 +6,7 @@
             "data": {
                 "from": "php:7.1-fpm-alpine",
                 "prod": false,
+                "nginx": false,
                 "version": "7.1"
             },
             "files": [
@@ -32,6 +33,7 @@
             "data": {
                 "from": "php:7.1-fpm-alpine",
                 "prod": true,
+                "nginx": false,
                 "version": "7.1"
             },
             "files": [
@@ -58,12 +60,17 @@
             "data": {
                 "from": "kooldev/php:7.1",
                 "prod": false,
+                "nginx": true,
                 "version": "7.1"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -79,13 +86,18 @@
             "name": "7.1-nginx-prod",
             "data": {
                 "from": "kooldev/php:7.1-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.1"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -102,6 +114,7 @@
             "data": {
                 "from": "kooldev/php:7.1-nginx",
                 "prod": false,
+                "nginx": true,
                 "version": "7.1"
             },
             "files": [
@@ -115,7 +128,8 @@
             "name": "7.1-nginx-wkhtmltopdf-prod",
             "data": {
                 "from": "kooldev/php:7.1-nginx-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.1"
             },
             "files": [
@@ -130,6 +144,7 @@
             "data": {
                 "from": "kooldev/php:7.1",
                 "prod": false,
+                "nginx": false,
                 "version": "7.1"
             },
             "files": [
@@ -144,6 +159,7 @@
             "data": {
                 "from": "kooldev/php:7.1-prod",
                 "prod": true,
+                "nginx": false,
                 "version": "7.1"
             },
             "files": [
@@ -158,6 +174,7 @@
             "data": {
                 "from": "php:7.2-fpm-alpine",
                 "prod": false,
+                "nginx": false,
                 "version": "7.2"
             },
             "files": [
@@ -184,6 +201,7 @@
             "data": {
                 "from": "php:7.2-fpm-alpine",
                 "prod": true,
+                "nginx": false,
                 "version": "7.2"
             },
             "files": [
@@ -210,12 +228,17 @@
             "data": {
                 "from": "kooldev/php:7.2",
                 "prod": false,
+                "nginx": true,
                 "version": "7.2"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -231,13 +254,18 @@
             "name": "7.2-nginx-prod",
             "data": {
                 "from": "kooldev/php:7.2-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.2"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -254,6 +282,7 @@
             "data": {
                 "from": "kooldev/php:7.2-nginx",
                 "prod": false,
+                "nginx": true,
                 "version": "7.2"
             },
             "files": [
@@ -267,7 +296,8 @@
             "name": "7.2-nginx-wkhtmltopdf-prod",
             "data": {
                 "from": "kooldev/php:7.2-nginx-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.2"
             },
             "files": [
@@ -282,6 +312,7 @@
             "data": {
                 "from": "kooldev/php:7.2",
                 "prod": false,
+                "nginx": false,
                 "version": "7.2"
             },
             "files": [
@@ -296,6 +327,7 @@
             "data": {
                 "from": "kooldev/php:7.2-prod",
                 "prod": true,
+                "nginx": false,
                 "version": "7.2"
             },
             "files": [
@@ -310,6 +342,7 @@
             "data": {
                 "from": "php:7.3-fpm-alpine",
                 "prod": false,
+                "nginx": false,
                 "version": "7.3"
             },
             "files": [
@@ -336,6 +369,7 @@
             "data": {
                 "from": "php:7.3-fpm-alpine",
                 "prod": true,
+                "nginx": false,
                 "version": "7.3"
             },
             "files": [
@@ -362,12 +396,17 @@
             "data": {
                 "from": "kooldev/php:7.3",
                 "prod": false,
+                "nginx": true,
                 "version": "7.3"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -383,13 +422,18 @@
             "name": "7.3-nginx-prod",
             "data": {
                 "from": "kooldev/php:7.3-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.3"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -406,6 +450,7 @@
             "data": {
                 "from": "kooldev/php:7.3-nginx",
                 "prod": false,
+                "nginx": true,
                 "version": "7.3"
             },
             "files": [
@@ -419,7 +464,8 @@
             "name": "7.3-nginx-wkhtmltopdf-prod",
             "data": {
                 "from": "kooldev/php:7.3-nginx-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.3"
             },
             "files": [
@@ -434,6 +480,7 @@
             "data": {
                 "from": "kooldev/php:7.3",
                 "prod": false,
+                "nginx": false,
                 "version": "7.3"
             },
             "files": [
@@ -448,6 +495,7 @@
             "data": {
                 "from": "kooldev/php:7.3-prod",
                 "prod": true,
+                "nginx": false,
                 "version": "7.3"
             },
             "files": [
@@ -462,6 +510,7 @@
             "data": {
                 "from": "php:7.4-fpm-alpine",
                 "prod": false,
+                "nginx": false,
                 "version": "7.4"
             },
             "files": [
@@ -488,6 +537,7 @@
             "data": {
                 "from": "php:7.4-fpm-alpine",
                 "prod": true,
+                "nginx": false,
                 "version": "7.4"
             },
             "files": [
@@ -514,12 +564,17 @@
             "data": {
                 "from": "kooldev/php:7.4",
                 "prod": false,
+                "nginx": true,
                 "version": "7.4"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -535,13 +590,18 @@
             "name": "7.4-nginx-prod",
             "data": {
                 "from": "kooldev/php:7.4-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.4"
             },
             "files": [
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
@@ -558,6 +618,7 @@
             "data": {
                 "from": "kooldev/php:7.4-nginx",
                 "prod": false,
+                "nginx": true,
                 "version": "7.4"
             },
             "files": [
@@ -571,7 +632,8 @@
             "name": "7.4-nginx-wkhtmltopdf-prod",
             "data": {
                 "from": "kooldev/php:7.4-nginx-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "7.4"
             },
             "files": [
@@ -586,6 +648,7 @@
             "data": {
                 "from": "kooldev/php:7.4",
                 "prod": false,
+                "nginx": false,
                 "version": "7.4"
             },
             "files": [
@@ -600,6 +663,7 @@
             "data": {
                 "from": "kooldev/php:7.4-prod",
                 "prod": true,
+                "nginx": false,
                 "version": "7.4"
             },
             "files": [
@@ -614,6 +678,7 @@
             "data": {
                 "from": "php:8.0-rc-fpm-alpine",
                 "prod": false,
+                "nginx": false,
                 "version": "8.0"
             },
             "files": [
@@ -640,6 +705,7 @@
             "data": {
                 "from": "php:8.0-rc-fpm-alpine",
                 "prod": true,
+                "nginx": false,
                 "version": "8.0"
             },
             "files": [
@@ -666,6 +732,7 @@
             "data": {
                 "from": "kooldev/php:8.0",
                 "prod": false,
+                "nginx": true,
                 "version": "8.0"
             },
             "files": [
@@ -687,7 +754,8 @@
             "name": "8.0-nginx-prod",
             "data": {
                 "from": "kooldev/php:8.0-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "8.0"
             },
             "files": [
@@ -710,6 +778,7 @@
             "data": {
                 "from": "kooldev/php:8.0-nginx",
                 "prod": false,
+                "nginx": true,
                 "version": "8.0"
             },
             "files": [
@@ -723,7 +792,8 @@
             "name": "8.0-nginx-wkhtmltopdf-prod",
             "data": {
                 "from": "kooldev/php:8.0-nginx-prod",
-                "prod": false,
+                "prod": true,
+                "nginx": true,
                 "version": "8.0"
             },
             "files": [
@@ -738,6 +808,7 @@
             "data": {
                 "from": "kooldev/php:8.0",
                 "prod": false,
+                "nginx": false,
                 "version": "8.0"
             },
             "files": [
@@ -752,6 +823,7 @@
             "data": {
                 "from": "kooldev/php:8.0-prod",
                 "prod": true,
+                "nginx": false,
                 "version": "8.0"
             },
             "files": [

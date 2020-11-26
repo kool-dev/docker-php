@@ -64,7 +64,9 @@ RUN adduser -D -u 1337 kool \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
     # composer
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer2 \
+    && su-exec kool composer global require hirak/prestissimo \
     # cleanup
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/*
@@ -76,5 +78,5 @@ RUN chmod +x /kool/entrypoint
 
 EXPOSE 9000
 
-ENTRYPOINT [ "dockerize", "-template", "/kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini", "-template", "/kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf", "/kool/entrypoint" ]
+ENTRYPOINT [ "/kool/entrypoint" ]
 CMD [ "php-fpm" ]

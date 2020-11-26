@@ -111,13 +111,13 @@ app:
 
 ## Contributing
 
-### Dependencies
+### Update images with templates
 
 - [fwd](https://github.com/fireworkweb/fwd#fireworkwebfwd)
 
 You should change `fwd-template.json` and `template` folder.
 
-After your changes, just run `fwd template` to compile the template and generate all version folder/files.
+After your changes, just run `kool docker fireworkweb/fwd:v1.0 fwd template` to compile the template and generate all version folder/files.
 
 ## License
 
