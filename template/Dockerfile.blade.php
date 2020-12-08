@@ -61,7 +61,20 @@ RUN adduser -D -u 1337 kool \
         soap \
         xml \
         zip \
-    && pecl install imagick redis {{ ! $prod ? 'xdebug' : '' }} \
+@if (version_compare($version, '8.0', '>='))
+    # Temporarily building for PHP 8.0: https://github.com/Imagick/imagick/issues/358
+    && git clone https://github.com/Imagick/imagick \
+    && cd imagick \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && cd ../ \
+    && rm -rf imagick \
+@else
+    && pecl install imagick \
+@endif
+    && pecl install redis {{ ! $prod ? 'xdebug' : '' }} \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \

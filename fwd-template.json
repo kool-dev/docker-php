@@ -436,7 +436,7 @@
         {
             "name": "8.0",
             "data": {
-                "from": "php:8.0-rc-fpm-alpine",
+                "from": "php:8.0-fpm-alpine",
                 "prod": false,
                 "nginx": false,
                 "version": "8.0"
@@ -463,7 +463,7 @@
         {
             "name": "8.0-prod",
             "data": {
-                "from": "php:8.0-rc-fpm-alpine",
+                "from": "php:8.0-fpm-alpine",
                 "prod": true,
                 "nginx": false,
                 "version": "8.0"

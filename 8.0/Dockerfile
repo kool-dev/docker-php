@@ -1,4 +1,4 @@
-FROM php:8.0-rc-fpm-alpine
+FROM php:8.0-fpm-alpine
 
 ENV ASUSER= \
     UID= \
@@ -49,7 +49,16 @@ RUN adduser -D -u 1337 kool \
         soap \
         xml \
         zip \
-    && pecl install imagick redis xdebug \
+    # Temporarily building for PHP 8.0: https://github.com/Imagick/imagick/issues/358
+    && git clone https://github.com/Imagick/imagick \
+    && cd imagick \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && cd ../ \
+    && rm -rf imagick \
+    && pecl install redis xdebug \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
