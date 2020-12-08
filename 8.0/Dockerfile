@@ -58,7 +58,8 @@ RUN adduser -D -u 1337 kool \
     && make install \
     && cd ../ \
     && rm -rf imagick \
-    && pecl install redis xdebug \
+    && pecl install redis \
+    && pecl install xdebug \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
