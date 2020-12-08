@@ -501,6 +501,10 @@
                     "path": "template/Dockerfile-nginx"
                 },
                 {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
                     "name": "default.tmpl",
                     "path": "template/default-tmpl"
                 },
@@ -522,6 +526,10 @@
                 {
                     "name": "Dockerfile",
                     "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
                 },
                 {
                     "name": "default.tmpl",
