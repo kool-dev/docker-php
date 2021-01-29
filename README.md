@@ -41,6 +41,12 @@ Minimal PHP Docker image focused on Laravel applications. It's use is intended f
 - [7.1-nginx](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx/Dockerfile)
 - [7.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-prod/Dockerfile)
 
+## More flavours
+
+We can always extend these images to suit them to our current use case. For example, we have a few extensions for specific use cases:
+
+- [Oracle OCI8 database](https://github.com/kool-dev/docker-php-oci8)
+
 ## Environment Variables
 
 Variable | Default Value | Description
