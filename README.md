@@ -4,6 +4,12 @@
 
 Minimal PHP Docker image focused on Laravel applications. It's use is intended for [kool.dev](https://github.com/kool-dev/kool), but can fit in any other PHP use-case.
 
+### Usage
+
+Simplest example:
+
+[![asciicast](https://asciinema.org/a/388121.svg)](https://asciinema.org/a/388121)
+
 ## Available Tags
 
 ### 8.0
