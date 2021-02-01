@@ -12,6 +12,8 @@ Simplest example:
 
 ## Available Tags
 
+The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?page=1&ordering=last_updated) which has a bunch of tags available:
+
 ### 8.0
 
 - [8.0](https://github.com/kool-dev/docker-php/blob/master/8.0/Dockerfile)
@@ -52,6 +54,7 @@ Simplest example:
 We can always extend these images to suit them to our current use case. For example, we have a few extensions for specific use cases:
 
 - [Oracle OCI8 database](https://github.com/kool-dev/docker-php-oci8)
+- [MS SQL Server `sqlsrv` database](https://github.com/kool-dev/docker-php-sqlsrv)
 
 ## Environment Variables
 
@@ -116,11 +119,9 @@ app:
 
 ### Update images with templates
 
-- [fwd](https://github.com/fireworkweb/fwd#fireworkwebfwd)
+You should change `fwd-template.json` for configuration and `template` folder for the actual base templates.
 
-You should change `fwd-template.json` and `template` folder.
-
-After your changes, just run `kool docker fireworkweb/fwd:v1.0 fwd template` to compile the template and generate all version folder/files.
+After any changes, we need to run `kool run template` to parse the templates and generate all versions folder/files.
 
 ## License
 
