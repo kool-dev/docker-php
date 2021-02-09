@@ -24,7 +24,7 @@ RUN adduser -D -u 1337 kool \
     # deps
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
         freetype libpng libjpeg-turbo libzip-dev ghostscript imagemagick \
-        jpegoptim optipng pngquant gifsicle libldap \
+        jpegoptim optipng pngquant gifsicle libldap postgresql-dev \
     # build-deps
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
