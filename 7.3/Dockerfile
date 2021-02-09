@@ -26,11 +26,13 @@ RUN adduser -D -u 1337 kool \
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
         freetype libpng libjpeg-turbo libzip-dev ghostscript imagemagick \
         jpegoptim optipng pngquant gifsicle libldap \
+        libpq \
     # build-deps
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
         imagemagick-dev openldap-dev  \
+        postgresql-dev \
     # php-ext
     && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/ \
@@ -48,6 +50,7 @@ RUN adduser -D -u 1337 kool \
         pcntl \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
         readline \
         soap \
         xml \
