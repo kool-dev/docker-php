@@ -22,6 +22,10 @@ post_max_size = @{{ .Env.PHP_POST_MAX_SIZE }}
 ; Note: This directive is hardcoded to 0 for the CLI SAPI
 max_execution_time = @{{ .Env.PHP_MAX_EXECUTION_TIME }}
 
+; Default timezone used by all date/time functions.
+; https://www.php.net/manual/en/datetime.configuration.php#ini.date.timezone
+date.timezone = @{{ .Env.PHP_DATE_TIMEZONE }}
+
 {{-- OPCACHE --}}
 @if ($prod)
 [opcache]
