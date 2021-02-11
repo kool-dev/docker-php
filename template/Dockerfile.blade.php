@@ -7,6 +7,7 @@ ENV ASUSER= \
 @unless ($prod)
     ENABLE_XDEBUG=false \
 @endunless
+    PHP_DATE_TIMEZONE=UTC \
     PHP_MEMORY_LIMIT=256M \
     PHP_MAX_INPUT_VARS=1000 \
     PHP_UPLOAD_MAX_FILESIZE=25M \
