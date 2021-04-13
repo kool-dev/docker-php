@@ -13,11 +13,21 @@ ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
 RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/supervisord_static_0.6.3_linux_amd64 -o /usr/local/bin/supervisord \
     && chmod +x /usr/local/bin/supervisord \
     && apk add --no-cache nginx \
-    && sed -i "s|^user .*|user\ kool kool;|g" /etc/nginx/nginx.conf \
     && chown -R kool:kool /var/lib/nginx \
     && chmod 770 /var/lib/nginx/tmp \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
+    && ln -sf /dev/stderr /var/log/nginx/error.log \
+    # add h5bp/server-configs-nginx
+    && mkdir /etc/nginx/h5bp \
+    && cd /etc/nginx/h5bp \
+    && wget https://github.com/h5bp/server-configs-nginx/archive/refs/tags/3.3.0.tar.gz -O h5bp.tgz \
+    && tar xzvf h5bp.tgz \
+    && rm -f h5bp.tgz \
+    && mv server-configs-nginx-*/h5bp/* . \
+    && mv server-configs-nginx-*/nginx.conf /etc/nginx/nginx.conf \
+    && sed -i "s|^user .*|user\ kool kool;|g" /etc/nginx/nginx.conf \
+    && mv server-configs-nginx-*/mime.types /etc/nginx/mime.types \
+    && rm -rf server-configs-nginx-*
 
 COPY supervisor.conf /kool/supervisor.conf
 COPY default.tmpl /kool/default.tmpl
