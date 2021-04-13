@@ -4,6 +4,8 @@
 
 Minimal PHP Docker image focused on Laravel applications. It's use is intended for [kool.dev](https://github.com/kool-dev/kool), but can fit in any other PHP use-case.
 
+The images with Nginx include [`h5bp/server-configs-nginx`](https://github.com/h5bp/server-configs-nginx) with a hand picked set of configuration active by default. So if you want to change or add a new server configuration you can `include h5bp/...` as you see fit.
+
 ### Usage
 
 Simplest example:
