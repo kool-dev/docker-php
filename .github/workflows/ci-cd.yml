@@ -59,18 +59,32 @@ jobs:
           docker push kooldev/php:${{ matrix.version }}${{ matrix.type }}
           docker push kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
+  trigger-build-wordpress:
+    name: Trigger Wordpress Build
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Trigger build on kool-dev/docker-wordpress
+        uses: benc-uk/workflow-dispatch@v1.1
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          workflow: CI/CD
+          repo: kool-dev/docker-wordpress
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
   trigger-extended-builds:
     name: Trigger Extended Builds
     runs-on: ubuntu-latest
     needs: build
     strategy:
       matrix:
-        image: ['kool-dev/docker-wordpress', 'kool-dev/docker-php-sqlsrv', 'kool-dev/docker-php-oci8']
+        image: ['kool-dev/docker-php-sqlsrv', 'kool-dev/docker-php-oci8']
     steps:
       - name: Trigger build on ${{ matrix.image }}
         uses: benc-uk/workflow-dispatch@v1.1
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           workflow: CI/CD
+          ref: refs/heads/main
           repo: ${{ matrix.image }}
           token: ${{ secrets.WORKFLOW_TOKEN }}
