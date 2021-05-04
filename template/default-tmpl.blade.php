@@ -35,7 +35,6 @@ server {
     include h5bp/internet_explorer/x-ua-compatible.conf;
     include h5bp/security/referrer-policy.conf;
     include h5bp/security/x-content-type-options.conf;
-    include h5bp/security/x-frame-options.conf;
     include h5bp/security/x-xss-protection.conf;
 
     # performance enhancements (mostly for caching static data)
