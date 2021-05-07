@@ -88,6 +88,8 @@ RUN adduser -D -u 1337 kool \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    # symlink composer2 for BC
+    && ln -s /usr/local/bin/composer /usr/local/bin/composer2 \
     && su-exec kool composer global require hirak/prestissimo \
     # cleanup
     && apk del .build-deps \
