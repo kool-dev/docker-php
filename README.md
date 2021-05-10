@@ -12,6 +12,10 @@ Simplest example:
 
 [![asciicast](https://asciinema.org/a/388121.svg)](https://asciinema.org/a/388121)
 
+##### About `composer`
+
+> All images currently ship out with Composer 2.x as the default version. If for some reason you still need to use Composer 1.x and cannot make the upgrade, we still ship a `composer1` in the images PATH as well, which is latest Composer 1.x version. Feel free to use it while you prepare to move to 2.0.
+
 ## Available Tags
 
 The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?page=1&ordering=last_updated) which has a bunch of tags available:
