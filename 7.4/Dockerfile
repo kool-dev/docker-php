@@ -53,6 +53,7 @@ RUN adduser -D -u 1337 kool \
         soap \
         xml \
         zip \
+        sockets \
     && pecl install imagick \
     && pecl install redis \
     && pecl install xdebug \

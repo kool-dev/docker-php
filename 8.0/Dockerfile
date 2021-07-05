@@ -53,6 +53,7 @@ RUN adduser -D -u 1337 kool \
         soap \
         xml \
         zip \
+        sockets \
     # Temporarily building for PHP 8.0: https://github.com/Imagick/imagick/issues/358
     && git clone https://github.com/Imagick/imagick \
     && cd imagick \
