@@ -23,6 +23,7 @@ RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/s
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
     # add h5bp/server-configs-nginx
+    && mkdir -p /etc/nginx/conf.d \
     && mkdir /etc/nginx/h5bp \
     && cd /etc/nginx/h5bp \
     && wget https://github.com/h5bp/server-configs-nginx/archive/refs/tags/3.3.0.tar.gz -O h5bp.tgz \

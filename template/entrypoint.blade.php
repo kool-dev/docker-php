@@ -20,7 +20,7 @@ if [ ! -z "$CURRENT_USER" ] && [ "$CURRENT_USER" != "0" ]; then
     usermod -u $CURRENT_USER kool
 fi
 
-dockerize -template /kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini -template /kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf {!! $nginx ? '-template /kool/default.tmpl:/etc/nginx/http.d/default.conf' : '' !!}
+dockerize -template /kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini -template /kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf {!! $nginx ? '-template /kool/default.tmpl:/etc/nginx/conf.d/default.conf' : '' !!}
 
 # Run entrypoint if provided
 if [ ! -z "$ENTRYPOINT" ] && [ -f "$ENTRYPOINT" ]; then
