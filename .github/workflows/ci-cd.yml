@@ -35,11 +35,11 @@ jobs:
           for suffix in '' -nginx; do
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
             docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer2 -V
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer1 -V
             docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
             docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
-            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer2 -V
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
+            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer1 -V
+            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m | grep readline
             docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
           done
 
