@@ -61,7 +61,6 @@ RUN adduser -D -u 1337 kool \
         pdo \
         pdo_mysql \
         pdo_pgsql \
-        readline \
         soap \
         xml \
         zip \
