@@ -57,6 +57,7 @@ RUN adduser -D -u 1337 kool \
         xml \
         zip \
         sockets \
+        mysqli \
     && pecl install imagick \
     && pecl install redis \
     && pecl install xdebug-2.9.8 \
