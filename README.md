@@ -20,6 +20,13 @@ Simplest example:
 
 The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?page=1&ordering=last_updated) which has a bunch of tags available:
 
+### 8.1
+
+- [8.1](https://github.com/kool-dev/docker-php/blob/master/8.1/Dockerfile)
+- [8.1-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-prod/Dockerfile)
+- [8.1-nginx](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx/Dockerfile)
+- [8.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx-prod/Dockerfile)
+
 ### 8.0
 
 - [8.0](https://github.com/kool-dev/docker-php/blob/master/8.0/Dockerfile)

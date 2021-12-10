@@ -28,3 +28,8 @@ scripts:
     - docker build --pull -t kooldev/php:8.0-prod 8.0-prod
     - docker build -t kooldev/php:8.0-nginx 8.0-nginx
     - docker build -t kooldev/php:8.0-nginx-prod 8.0-nginx-prod
+    # PHP 8.1
+    - docker build --pull -t kooldev/php:8.1 8.1
+    - docker build --pull -t kooldev/php:8.1-prod 8.1-prod
+    - docker build -t kooldev/php:8.1-nginx 8.1-nginx
+    - docker build -t kooldev/php:8.1-nginx-prod 8.1-nginx-prod
