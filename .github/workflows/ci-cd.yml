@@ -27,14 +27,16 @@ jobs:
           context: ${{ matrix.version }}${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+          cache-from: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+          cache-to: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
       - name: Build and export to Docker (nginx)
         uses: docker/build-push-action@v2
         with:
-          cache-from: ${{ matrix.version }}${{ matrix.type }}
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+          cache-from: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
 
       - name: Tests
