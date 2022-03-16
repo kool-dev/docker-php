@@ -23,7 +23,7 @@ jobs:
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -51,7 +51,7 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v2
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           context: ${{ matrix.version }}${{ matrix.type }}
           platforms: linux/amd64,linux/arm64
@@ -65,7 +65,7 @@ jobs:
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
-      - name: Tests
+      - name: Tests (nginx)
         run: |
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
@@ -84,7 +84,7 @@ jobs:
 
       - name: Build and push (nginx)
         uses: docker/build-push-action@v2
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           platforms: linux/amd64,linux/arm64
