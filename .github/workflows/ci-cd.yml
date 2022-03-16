@@ -20,14 +20,42 @@ jobs:
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
-          driver: docker
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and export to Docker
         uses: docker/build-push-action@v2
         with:
           context: ${{ matrix.version }}${{ matrix.type }}
           load: true
+          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+
+      - name: Tests
+        run: |
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} composer1 -V
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
+
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} cat /testsomething
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} cat /testsomething
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          context: ${{ matrix.version }}${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
       - name: Build and export to Docker (nginx)
@@ -39,16 +67,14 @@ jobs:
 
       - name: Tests
         run: |
-          for suffix in '' -nginx; do
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer1 -V
-            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -v
-            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer -V
-            docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} composer1 -V
-            docker run kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m | grep readline
-            docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}$suffix${{ matrix.type }} php -m
-          done
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m
 
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
@@ -56,25 +82,9 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} cat /testsomething
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} cat /testsomething
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: ${{ matrix.version }}${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
-
       - name: Build and push (nginx)
         uses: docker/build-push-action@v2
-        # if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           platforms: linux/amd64,linux/arm64
