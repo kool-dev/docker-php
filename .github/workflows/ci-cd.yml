@@ -47,7 +47,6 @@ jobs:
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
 
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} cat /testsomething
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} cat /testsomething
 
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -79,7 +78,6 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} cat /testsomething
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} cat /testsomething
 
       - name: Build and push (nginx)
