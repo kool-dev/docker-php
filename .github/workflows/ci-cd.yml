@@ -24,14 +24,14 @@ jobs:
       - name: Build and export to Docker
         uses: docker/build-push-action@v2
         with:
-          context: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+          context: ${{ matrix.version }}${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
       - name: Build and export to Docker (nginx)
         uses: docker/build-push-action@v2
         with:
-          context: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+          context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
-          context: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+          context: ${{ matrix.version }}${{ matrix.type }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
-          context: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+          context: ${{ matrix.version }}-nginx${{ matrix.type }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
