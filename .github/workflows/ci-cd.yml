@@ -52,6 +52,7 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} cat /testsomething
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} cat /testsomething
 
       - name: Login to DockerHub
