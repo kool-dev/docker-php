@@ -24,6 +24,7 @@ jobs:
       - name: Build and export to Docker
         uses: docker/build-push-action@v2
         with:
+          cache-to: ${{ matrix.version }}${{ matrix.type }}
           context: ${{ matrix.version }}${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
@@ -31,9 +32,11 @@ jobs:
       - name: Build and export to Docker (nginx)
         uses: docker/build-push-action@v2
         with:
+          cache-from: ${{ matrix.version }}${{ matrix.type }}
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+
 
       - name: Tests
         run: |
@@ -58,7 +61,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push to DockerHub
+      - name: Build and push
         uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -67,7 +70,7 @@ jobs:
           push: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
-      - name: Push to DockerHub
+      - name: Build and push (nginx)
         uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
