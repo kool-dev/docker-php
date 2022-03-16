@@ -1,5 +1,7 @@
 FROM php:8.0-fpm-alpine
 
+RUN echo "test" > /testsomething
+
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
@@ -54,16 +56,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
-    # Temporarily building for PHP 8.0: https://github.com/Imagick/imagick/issues/358
-    && git clone https://github.com/Imagick/imagick \
-    && cd imagick \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && cd ../ \
-    && rm -rf imagick \
-    && pecl install redis \
+    && pecl install imagick redis \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \

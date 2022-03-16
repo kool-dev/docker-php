@@ -1,5 +1,7 @@
 FROM php:7.1-fpm-alpine
 
+RUN echo "test" > /testsomething
+
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
@@ -57,8 +59,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
-    && pecl install imagick \
-    && pecl install redis \
+    && pecl install imagick redis \
     && pecl install xdebug-2.9.8 \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
