@@ -1,7 +1,5 @@
 FROM php:7.4-fpm-alpine
 
-RUN echo "test" > /testsomething
-
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \

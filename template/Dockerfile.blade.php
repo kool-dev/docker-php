@@ -1,7 +1,5 @@
 FROM {{ $from }}
 
-RUN echo "test" > /testsomething
-
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
