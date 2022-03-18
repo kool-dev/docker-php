@@ -54,8 +54,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
-    && pecl install imagick \
-    && pecl install redis \
+    && pecl install imagick redis \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \

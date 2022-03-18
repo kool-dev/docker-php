@@ -66,20 +66,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
-@if (version_compare($version, '8.0', '>='))
-    # Temporarily building for PHP 8.0: https://github.com/Imagick/imagick/issues/358
-    && git clone https://github.com/Imagick/imagick \
-    && cd imagick \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && cd ../ \
-    && rm -rf imagick \
-@else
-    && pecl install imagick \
-@endif
-    && pecl install redis \
+    && pecl install imagick redis \
 @if (! $prod)
     && pecl install {{ version_compare($version, '7.2', '>=') ? 'xdebug' : 'xdebug-2.9.8' }} \
 @endif
