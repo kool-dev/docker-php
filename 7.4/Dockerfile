@@ -56,6 +56,7 @@ RUN adduser -D -u 1337 kool \
         mysqli \
     && pecl install imagick redis \
     && pecl install xdebug \
+    && pecl install pcov && docker-php-ext-enable pcov \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
