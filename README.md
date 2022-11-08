@@ -34,33 +34,7 @@ The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?pag
 - [8.0-nginx](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx/Dockerfile)
 - [8.0-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx-prod/Dockerfile)
 
-### 7.4
-
-- [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile)
-- [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile)
-- [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile)
-- [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile)
-
-### 7.3
-
-- [7.3](https://github.com/kool-dev/docker-php/blob/master/7.3/Dockerfile)
-- [7.3-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-prod/Dockerfile)
-- [7.3-nginx](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx/Dockerfile)
-- [7.3-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx-prod/Dockerfile)
-
-### 7.2
-
-- [7.2](https://github.com/kool-dev/docker-php/blob/master/7.2/Dockerfile)
-- [7.2-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-prod/Dockerfile)
-- [7.2-nginx](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx/Dockerfile)
-- [7.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx-prod/Dockerfile)
-
-### 7.1
-
-- [7.1](https://github.com/kool-dev/docker-php/blob/master/7.1/Dockerfile)
-- [7.1-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-prod/Dockerfile)
-- [7.1-nginx](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx/Dockerfile)
-- [7.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-prod/Dockerfile)
+There are also older versions available like [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile), [7.3](https://github.com/kool-dev/docker-php/blob/master/7.3/Dockerfile), [7.3-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-prod/Dockerfile), [7.3-nginx](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx/Dockerfile), [7.3-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.3-nginx-prod/Dockerfile), [7.2](https://github.com/kool-dev/docker-php/blob/master/7.2/Dockerfile), [7.2-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-prod/Dockerfile), [7.2-nginx](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx/Dockerfile), [7.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.2-nginx-prod/Dockerfile), [7.1](https://github.com/kool-dev/docker-php/blob/master/7.1/Dockerfile), [7.1-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-prod/Dockerfile), [7.1-nginx](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx/Dockerfile), [7.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.1-nginx-prod/Dockerfile).
 
 ## More flavours
 
@@ -68,6 +42,7 @@ We can always extend these images to suit them to our current use case. For exam
 
 - [Oracle OCI8 database](https://github.com/kool-dev/docker-php-oci8)
 - [MS SQL Server `sqlsrv` database](https://github.com/kool-dev/docker-php-sqlsrv)
+- [Swoole](https://github.com/kool-dev/docker-php-swoole)
 
 ## Environment Variables
 
