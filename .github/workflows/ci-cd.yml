@@ -104,7 +104,11 @@ jobs:
     needs: build
     strategy:
       matrix:
-        image: ['kool-dev/docker-phpqa', 'kool-dev/docker-php-sqlsrv', 'kool-dev/docker-php-oci8']
+        image:
+          - kool-dev/docker-php-oci8
+          - kool-dev/docker-php-sqlsrv
+          - kool-dev/docker-php-swoole
+          - kool-dev/docker-phpqa
     steps:
       - name: Trigger build on ${{ matrix.image }}
         uses: benc-uk/workflow-dispatch@v1.1
