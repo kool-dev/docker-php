@@ -105,7 +105,6 @@ jobs:
     strategy:
       matrix:
         image:
-          - kool-dev/docker-php-oci8
           - kool-dev/docker-php-sqlsrv
           - kool-dev/docker-php-swoole
           - kool-dev/docker-phpqa
