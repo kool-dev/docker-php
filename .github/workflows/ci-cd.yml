@@ -91,7 +91,7 @@ jobs:
     needs: build
     steps:
       - name: Trigger build on kool-dev/docker-wordpress
-        uses: benc-uk/workflow-dispatch@v1.1
+        uses: benc-uk/workflow-dispatch@v1.2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           workflow: CI/CD
@@ -110,7 +110,7 @@ jobs:
           - kool-dev/docker-phpqa
     steps:
       - name: Trigger build on ${{ matrix.image }}
-        uses: benc-uk/workflow-dispatch@v1.1
+        uses: benc-uk/workflow-dispatch@v1.2
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           workflow: CI/CD
