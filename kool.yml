@@ -39,10 +39,10 @@ scripts:
     # parse templates
     - kool run template
     # build
-    - docker build-7.1
-    - docker build-7.2
-    - docker build-7.3
-    - docker build-7.4
-    - docker build-8.0
-    - docker build-8.1
-    - docker build-8.2
+    - kool run build-7.1
+    - kool run build-7.2
+    - kool run build-7.3
+    - kool run build-7.4
+    - kool run build-8.0
+    - kool run build-8.1
+    - kool run build-8.2

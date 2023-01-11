@@ -34,6 +34,7 @@ RUN adduser -D -u 1337 kool \
         icu-dev libedit-dev libxml2-dev \
         imagemagick-dev openldap-dev  \
         postgresql-dev \
+        linux-headers \
     # php-ext
     && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/ \
