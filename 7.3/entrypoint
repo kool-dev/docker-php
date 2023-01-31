@@ -20,6 +20,7 @@ fi
 
 dockerize -template /kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini -template /kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf 
 
+
 # Run entrypoint if provided
 if [ ! -z "$ENTRYPOINT" ] && [ -f "$ENTRYPOINT" ]; then
     bash $ENTRYPOINT
