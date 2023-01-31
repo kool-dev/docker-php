@@ -34,6 +34,7 @@ RUN adduser -D -u 1337 kool \
         icu-dev libedit-dev libxml2-dev \
         imagemagick-dev openldap-dev oniguruma-dev \
         postgresql-dev \
+        linux-headers \
     # php-ext
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
@@ -55,7 +56,7 @@ RUN adduser -D -u 1337 kool \
         sockets \
         mysqli \
     && pecl install imagick redis \
-    && pecl install xdebug \
+    && pecl install xdebug-3.1.6 \
     && pecl install pcov && docker-php-ext-enable pcov \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
