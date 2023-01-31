@@ -23,7 +23,7 @@ fi
 dockerize -template /kool/kool.tmpl:/usr/local/etc/php/conf.d/kool.ini -template /kool/zz-docker.tmpl:/usr/local/etc/php-fpm.d/zz-docker.conf {!! $nginx ? '-template /kool/default.tmpl:/etc/nginx/conf.d/default.conf' : '' !!}
 
 @if ($nginx)
-    /kool/30-tune-worker-processes.sh
+/kool/30-tune-worker-processes.sh
 @endif
 
 # Run entrypoint if provided
