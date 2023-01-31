@@ -82,6 +82,7 @@ Variable | Default Value | Description
 **NGINX_FASTCGI_READ_TIMEOUT** | `60s` | Changes a timeout for reading a response from the FastCGI server
 **NGINX_FASTCGI_BUFFERS** | `8 8k` | Changes the number and size of the buffers used for reading a response
 **NGINX_FASTCGI_BUFFER_SIZE** | `16k` | Changes the size of the buffer used for reading the first part of the response received
+**NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE** | `true` | Enables auto-tuning of worker processes based on available CPU cores (container instead of host), to disable set it to empty string
 
 ## Usage
 
