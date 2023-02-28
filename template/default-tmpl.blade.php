@@ -1,6 +1,14 @@
 server {
     listen @{{ .Env.NGINX_LISTEN }} default_server;
     server_name _;
+@{{ if isTrue .Env.NGINX_HTTPS }}
+    {{-- SSL --}}
+    listen @{{ .Env.NGINX_LISTEN_HTTPS }} ssl http2;
+    ssl_certificate     @{{ .Env.NGINX_HTTPS_CERT }};
+    ssl_certificate_key @{{ .Env.NGINX_HTTPS_CERT_KEY }};
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+@{{ end }}
     root @{{ .Env.NGINX_ROOT }};
     index @{{ .Env.NGINX_INDEX }};
     charset utf-8;

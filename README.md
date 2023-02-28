@@ -83,6 +83,10 @@ Variable | Default Value | Description
 **NGINX_FASTCGI_BUFFERS** | `8 8k` | Changes the number and size of the buffers used for reading a response
 **NGINX_FASTCGI_BUFFER_SIZE** | `16k` | Changes the size of the buffer used for reading the first part of the response received
 **NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE** | `true` | Enables auto-tuning of worker processes based on available CPU cores (container instead of host), to disable set it to empty string
+**NGINX_HTTPS** | `false` | Enables the HTTPS server
+**NGINX_LISTEN_HTTPS** | `443` | Port for the HTTPS server to listen
+**NGINX_HTTPS_CERT** | `/kool/ssl/_.localhost.pem` | The path in the container for the SSL certificate file
+**NGINX_HTTPS_CERT_KEY** | `/kool/ssl/_.localhost.key` | The path in the container for the SSL certificate key file
 
 ## Usage
 
