@@ -1,7 +1,25 @@
+FROM debian AS cert
+
+WORKDIR /kool/ssl
+
+RUN apt-get update && \
+    apt-get install -y openssl && \
+    openssl genrsa -des3 -passout pass:x -out server.pass.key 2048 && \
+    openssl rsa -passin pass:x -in server.pass.key -out _.localhost.key && \
+    rm server.pass.key && \
+    openssl req -new -key _.localhost.key -out server.csr \
+        -subj "/C=XX/ST=XX/L=XX/O=Kool-Local/OU=Localhost/CN=*.localhost" && \
+    openssl x509 -req -days 365 -in server.csr -signkey _.localhost.key -out _.localhost.crt && \
+    openssl x509 -in _.localhost.crt -out _.localhost.pem
+
 FROM kooldev/php:7.1
 
 ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
     NGINX_LISTEN=80 \
+    NGINX_HTTPS=false \
+    NGINX_LISTEN_HTTPS=443 \
+    NGINX_HTTPS_CERT=/kool/ssl/_.localhost.pem \
+    NGINX_HTTPS_CERT_KEY=/kool/ssl/_.localhost.key \
     NGINX_ROOT=/app/public \
     NGINX_INDEX=index.php \
     NGINX_CLIENT_MAX_BODY_SIZE=25M \
@@ -36,6 +54,7 @@ RUN curl -L https://github.com/ochinchina/supervisord/releases/download/v0.6.3/s
 COPY supervisor.conf /kool/supervisor.conf
 COPY default.tmpl /kool/default.tmpl
 COPY entrypoint /kool/entrypoint
+COPY --from=cert /kool/ssl /kool/ssl
 RUN chmod +x /kool/entrypoint
 
 EXPOSE 80
