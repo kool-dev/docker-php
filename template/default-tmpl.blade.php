@@ -2,7 +2,6 @@ server {
     listen @{{ .Env.NGINX_LISTEN }} default_server;
     server_name _;
 @{{ if isTrue .Env.NGINX_HTTPS }}
-    {{-- SSL --}}
     listen @{{ .Env.NGINX_LISTEN_HTTPS }} ssl http2;
     ssl_certificate     @{{ .Env.NGINX_HTTPS_CERT }};
     ssl_certificate_key @{{ .Env.NGINX_HTTPS_CERT_KEY }};
