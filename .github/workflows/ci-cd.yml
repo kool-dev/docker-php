@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and export to Docker
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ${{ matrix.version }}${{ matrix.type }}
           load: true
@@ -51,7 +51,7 @@ jobs:
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           context: ${{ matrix.version }}${{ matrix.type }}
@@ -60,7 +60,7 @@ jobs:
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
       - name: Build and export to Docker (nginx)
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
           load: true
@@ -81,7 +81,7 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
 
       - name: Build and push (nginx)
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
