@@ -1,20 +1,5 @@
 scripts:
   template: kool docker fireworkweb/fwd:v1.0 fwd template
-  build-7.1:
-    - docker build --pull -t kooldev/php:7.1 7.1
-    - docker build --pull -t kooldev/php:7.1-prod 7.1-prod
-    - docker build -t kooldev/php:7.1-nginx 7.1-nginx
-    - docker build -t kooldev/php:7.1-nginx-prod 7.1-nginx-prod
-  build-7.2:
-    - docker build --pull -t kooldev/php:7.2 7.2
-    - docker build --pull -t kooldev/php:7.2-prod 7.2-prod
-    - docker build -t kooldev/php:7.2-nginx 7.2-nginx
-    - docker build -t kooldev/php:7.2-nginx-prod 7.2-nginx-prod
-  build-7.3:
-    - docker build --pull -t kooldev/php:7.3 7.3
-    - docker build --pull -t kooldev/php:7.3-prod 7.3-prod
-    - docker build -t kooldev/php:7.3-nginx 7.3-nginx
-    - docker build -t kooldev/php:7.3-nginx-prod 7.3-nginx-prod
   build-7.4:
     - docker build --pull -t kooldev/php:7.4 7.4
     - docker build --pull -t kooldev/php:7.4-prod 7.4-prod
@@ -39,9 +24,6 @@ scripts:
     # parse templates
     - kool run template
     # build
-    - kool run build-7.1
-    - kool run build-7.2
-    - kool run build-7.3
     - kool run build-7.4
     - kool run build-8.0
     - kool run build-8.1

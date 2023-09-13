@@ -69,7 +69,7 @@ RUN adduser -D -u 1337 kool \
         mysqli \
     && pecl install imagick redis \
 @if (! $prod)
-    && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : (version_compare($version, '7.2', '>=') ? 'xdebug-3.1.6' : 'xdebug-2.9.8') }} \
+    && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : 'xdebug-3.1.6' }} \
     && pecl install pcov && docker-php-ext-enable pcov \
 @endif
     && docker-php-ext-enable imagick \
