@@ -41,7 +41,9 @@ The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?pag
 - [8.0-nginx](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx/Dockerfile)
 - [8.0-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx-prod/Dockerfile)
 
-There are also older versions available like [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile).
+### Legacy versions
+
+- [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile).
 
 ## More flavours
 
