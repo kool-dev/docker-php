@@ -13,6 +13,7 @@ scripts:
   build-8.2:
     - docker build --pull -t kooldev/php:8.2 8.2
     - docker build --pull -t kooldev/php:8.2-prod 8.2-prod
+    - docker build --pull -t kooldev/php:8.2-node 8.2-node
     - docker build -t kooldev/php:8.2-nginx 8.2-nginx
     - docker build -t kooldev/php:8.2-nginx-prod 8.2-nginx-prod
   build:

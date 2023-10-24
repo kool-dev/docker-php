@@ -1,12 +1,10 @@
-FROM {{ $from }}
+FROM php:8.2-fpm-alpine
 
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1 \
-@unless ($prod)
     ENABLE_XDEBUG=false \
-@endunless
     PHP_DATE_TIMEZONE=UTC \
     PHP_MEMORY_LIMIT=256M \
     PHP_MAX_INPUT_VARS=1000 \
@@ -34,18 +32,11 @@ RUN adduser -D -u 1337 kool \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
-        imagemagick-dev openldap-dev {{ version_compare($version, '7.4', '>=') ? 'oniguruma-dev' : '' }} \
+        imagemagick-dev openldap-dev oniguruma-dev \
         postgresql-dev \
         linux-headers \
     # php-ext
-@if (version_compare($version, '7.4', '>='))
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-@else
-    && docker-php-ext-configure gd \
-        --with-freetype-dir=/usr/include/ \
-        --with-png-dir=/usr/include/ \
-        --with-jpeg-dir=/usr/include/ \
-@endif
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
@@ -55,9 +46,6 @@ RUN adduser -D -u 1337 kool \
         intl \
         ldap \
         mbstring \
-@if ($prod)
-        opcache \
-@endif
         pcntl \
         pdo \
         pdo_mysql \
@@ -68,13 +56,11 @@ RUN adduser -D -u 1337 kool \
         sockets \
         mysqli \
     && pecl install imagick redis \
-@if (! $prod)
-    && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : 'xdebug-3.1.6' }} \
+    && pecl install xdebug \
     && pecl install pcov && docker-php-ext-enable pcov \
-@endif
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \
+    && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
@@ -84,10 +70,8 @@ RUN adduser -D -u 1337 kool \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/*
 
-@if ($with_node ?? false)
 RUN apk add --update --no-cache npm
 
-@endif
 COPY kool.ini /kool/kool.tmpl
 COPY zz-docker.conf /kool/zz-docker.tmpl
 COPY entrypoint /kool/entrypoint

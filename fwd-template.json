@@ -272,6 +272,34 @@
             ]
         },
         {
+            "name": "8.2-node",
+            "data": {
+                "from": "php:8.2-fpm-alpine",
+                "with_node": true,
+                "prod": false,
+                "nginx": false,
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
             "name": "8.2-nginx",
             "data": {
                 "from": "kooldev/php:8.2",
