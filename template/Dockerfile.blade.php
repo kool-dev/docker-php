@@ -84,10 +84,6 @@ RUN adduser -D -u 1337 kool \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/*
 
-@if ($with_node ?? false)
-RUN apk add --update --no-cache npm
-
-@endif
 COPY kool.ini /kool/kool.tmpl
 COPY zz-docker.conf /kool/zz-docker.tmpl
 COPY entrypoint /kool/entrypoint

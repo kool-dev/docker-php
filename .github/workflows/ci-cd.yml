@@ -66,6 +66,14 @@ jobs:
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
+      - name: Build and export to Docker (Node)
+        uses: docker/build-push-action@v5
+        if: ${{ matrix.type }} == ''
+        with:
+          context: ${{ matrix.version }}-node${{ matrix.type }}
+          load: true
+          tags: kooldev/php:${{ matrix.version }}-node${{ matrix.type }}
+
       - name: Tests (nginx)
         run: |
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
