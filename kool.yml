@@ -5,16 +5,19 @@ scripts:
     - docker build --pull -t kooldev/php:8.0-prod 8.0-prod
     - docker build -t kooldev/php:8.0-nginx 8.0-nginx
     - docker build -t kooldev/php:8.0-nginx-prod 8.0-nginx-prod
+    - docker build -t kooldev/php:8.0-node 8.0-node
   build-8.1:
-    - docker build --pull -t kooldev/php:8.1 8.1
-    - docker build --pull -t kooldev/php:8.1-prod 8.1-prod
+    - docker build -t kooldev/php:8.1 8.1
+    - docker build -t kooldev/php:8.1-prod 8.1-prod
     - docker build -t kooldev/php:8.1-nginx 8.1-nginx
     - docker build -t kooldev/php:8.1-nginx-prod 8.1-nginx-prod
+    - docker build -t kooldev/php:8.1-node 8.1-node
   build-8.2:
-    - docker build --pull -t kooldev/php:8.2 8.2
-    - docker build --pull -t kooldev/php:8.2-prod 8.2-prod
+    - docker build -t kooldev/php:8.2 8.2
+    - docker build -t kooldev/php:8.2-prod 8.2-prod
     - docker build -t kooldev/php:8.2-nginx 8.2-nginx
     - docker build -t kooldev/php:8.2-nginx-prod 8.2-nginx-prod
+    - docker build -t kooldev/php:8.2-node 8.2-node
   build:
     # parse templates
     - kool run template

@@ -110,6 +110,19 @@
             ]
         },
         {
+            "name": "8.0-node",
+            "data": {
+                "from": "kooldev/php:8.0",
+                "version": "8.0"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-node"
+                }
+            ]
+        },
+        {
             "name": "8.1",
             "data": {
                 "from": "php:8.1-fpm-alpine",
@@ -218,6 +231,19 @@
             ]
         },
         {
+            "name": "8.1-node",
+            "data": {
+                "from": "kooldev/php:8.1",
+                "version": "8.1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-node"
+                }
+            ]
+        },
+        {
             "name": "8.2",
             "data": {
                 "from": "php:8.2-fpm-alpine",
@@ -322,6 +348,19 @@
                 {
                     "name": "supervisor.conf",
                     "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.2-node",
+            "data": {
+                "from": "kooldev/php:8.2",
+                "version": "8.2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-node"
                 }
             ]
         }

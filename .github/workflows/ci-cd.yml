@@ -66,6 +66,21 @@ jobs:
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
+      - name: Build and export to Docker (Node)
+        uses: docker/build-push-action@v5
+        if: matrix.type  == ''
+        with:
+          context: ${{ matrix.version }}-node${{ matrix.type }}
+          load: true
+          tags: kooldev/php:${{ matrix.version }}-node${{ matrix.type }}
+
+      - name: Tests (Node)
+        if: matrix.type  == ''
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-node${{ matrix.type }} node -v
+          docker run kooldev/php:${{ matrix.version }}-node${{ matrix.type }} npm -v
+          docker run kooldev/php:${{ matrix.version }}-node${{ matrix.type }} yarn -v
+
       - name: Tests (nginx)
         run: |
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
@@ -88,6 +103,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+
+      - name: Build and push (Node)
+        uses: docker/build-push-action@v5
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php' && matrix.type  == ''
+        with:
+          context: ${{ matrix.version }}-node${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: kooldev/php:${{ matrix.version }}-node${{ matrix.type }}
 
   trigger-build-wordpress:
     name: Trigger Wordpress Build
