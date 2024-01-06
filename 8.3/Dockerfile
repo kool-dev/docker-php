@@ -1,9 +1,10 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 ENV ASUSER= \
     UID= \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1 \
+    ENABLE_XDEBUG=false \
     PHP_DATE_TIMEZONE=UTC \
     PHP_MEMORY_LIMIT=256M \
     PHP_MAX_INPUT_VARS=1000 \
@@ -45,7 +46,6 @@ RUN adduser -D -u 1337 kool \
         intl \
         ldap \
         mbstring \
-        opcache \
         pcntl \
         pdo \
         pdo_mysql \
@@ -56,10 +56,17 @@ RUN adduser -D -u 1337 kool \
         sockets \
         mysqli \
     && pecl install redis \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
+    && pecl install xdebug \
+    && pecl install pcov && docker-php-ext-enable pcov \
+    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/7088edc353f53c4bc644573a79cdcd67a726ae16.tar.gz \
+    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
+    && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
