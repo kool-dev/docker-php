@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 ENV ASUSER= \
     UID= \
@@ -56,8 +56,13 @@ RUN adduser -D -u 1337 kool \
         sockets \
         mysqli \
     && pecl install redis \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
+    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/7088edc353f53c4bc644573a79cdcd67a726ae16.tar.gz \
+    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer

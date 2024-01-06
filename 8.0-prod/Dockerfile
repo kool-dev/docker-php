@@ -55,15 +55,14 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
-    && pecl install imagick redis \
+    && pecl install redis \
+    && pecl install imagick \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
-    # symlink composer2 for BC
-    && ln -s /usr/local/bin/composer /usr/local/bin/composer2 \
     # cleanup
     && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/*

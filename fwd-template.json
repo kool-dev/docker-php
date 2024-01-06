@@ -363,6 +363,127 @@
                     "path": "template/Dockerfile-node"
                 }
             ]
+        },
+        {
+            "name": "8.3",
+            "data": {
+                "from": "php:8.3-fpm-alpine",
+                "prod": false,
+                "nginx": false,
+                "version": "8.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.3-prod",
+            "data": {
+                "from": "php:8.3-fpm-alpine",
+                "prod": true,
+                "nginx": false,
+                "version": "8.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.3-nginx",
+            "data": {
+                "from": "kooldev/php:8.3",
+                "prod": false,
+                "nginx": true,
+                "version": "8.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.3-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.3-prod",
+                "prod": true,
+                "nginx": true,
+                "version": "8.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.3-node",
+            "data": {
+                "from": "kooldev/php:8.3",
+                "version": "8.3"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-node"
+                }
+            ]
         }
     ]
 }
