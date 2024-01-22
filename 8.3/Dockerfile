@@ -55,6 +55,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
+        ftp \
     && pecl install redis \
     && pecl install xdebug \
     && pecl install pcov && docker-php-ext-enable pcov \

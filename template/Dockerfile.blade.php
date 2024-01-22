@@ -67,6 +67,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
+        ftp \
     && pecl install redis \
 @if (! $prod)
     && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : 'xdebug-3.1.6' }} \

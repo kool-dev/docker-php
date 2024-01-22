@@ -55,6 +55,7 @@ RUN adduser -D -u 1337 kool \
         zip \
         sockets \
         mysqli \
+        ftp \
     && pecl install redis \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
