@@ -246,7 +246,7 @@
         {
             "name": "8.2",
             "data": {
-                "from": "php:8.2-fpm-alpine",
+                "from": "php:8.2.14-fpm-alpine",
                 "prod": false,
                 "nginx": false,
                 "version": "8.2"
@@ -273,7 +273,7 @@
         {
             "name": "8.2-prod",
             "data": {
-                "from": "php:8.2-fpm-alpine",
+                "from": "php:8.2.14-fpm-alpine",
                 "prod": true,
                 "nginx": false,
                 "version": "8.2"
@@ -300,7 +300,7 @@
         {
             "name": "8.2-nginx",
             "data": {
-                "from": "kooldev/php:8.2",
+                "from": "kooldev/php:8.2.14",
                 "prod": false,
                 "nginx": true,
                 "version": "8.2"
@@ -327,7 +327,7 @@
         {
             "name": "8.2-nginx-prod",
             "data": {
-                "from": "kooldev/php:8.2-prod",
+                "from": "kooldev/php:8.2.14-prod",
                 "prod": true,
                 "nginx": true,
                 "version": "8.2"
@@ -354,7 +354,7 @@
         {
             "name": "8.2-node",
             "data": {
-                "from": "kooldev/php:8.2",
+                "from": "kooldev/php:8.2.14",
                 "version": "8.2"
             },
             "files": [

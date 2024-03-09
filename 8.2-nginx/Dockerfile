@@ -12,7 +12,7 @@ RUN apt-get update && \
     openssl x509 -req -days 365 -in server.csr -signkey _.localhost.key -out _.localhost.crt && \
     openssl x509 -in _.localhost.crt -out _.localhost.pem
 
-FROM kooldev/php:8.2
+FROM kooldev/php:8.2.14
 
 ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
     NGINX_LISTEN=80 \

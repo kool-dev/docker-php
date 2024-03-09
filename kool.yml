@@ -13,11 +13,11 @@ scripts:
     - docker build -t kooldev/php:8.1-nginx-prod 8.1-nginx-prod
     - docker build -t kooldev/php:8.1-node 8.1-node
   build-8.2:
-    - docker build -t kooldev/php:8.2 8.2
-    - docker build -t kooldev/php:8.2-prod 8.2-prod
-    - docker build -t kooldev/php:8.2-nginx 8.2-nginx
-    - docker build -t kooldev/php:8.2-nginx-prod 8.2-nginx-prod
-    - docker build -t kooldev/php:8.2-node 8.2-node
+    - docker build --platform=linux/amd64 -t kooldev/php:8.2.14 8.2
+    - docker build --platform=linux/amd64 -t kooldev/php:8.2.14-prod 8.2-prod
+    - docker build --platform=linux/amd64 -t kooldev/php:8.2.14-nginx 8.2-nginx
+    - docker build --platform=linux/amd64 -t kooldev/php:8.2.14-nginx-prod 8.2-nginx-prod
+    - docker build --platform=linux/amd64 -t kooldev/php:8.2.14-node 8.2-node
   build-8.3:
     - docker build -t kooldev/php:8.3 8.3
     - docker build -t kooldev/php:8.3-prod 8.3-prod
