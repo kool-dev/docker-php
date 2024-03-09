@@ -20,29 +20,24 @@ Simplest example:
 
 The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?page=1&ordering=last_updated) which has a bunch of tags available:
 
+### 8.3
+
+- [8.3](https://github.com/kool-dev/docker-php/blob/master/8.3/Dockerfile) and [8.3-prod](https://github.com/kool-dev/docker-php/blob/master/8.3-prod/Dockerfile)
+- [8.3-nginx](https://github.com/kool-dev/docker-php/blob/master/8.3-nginx/Dockerfile) and [8.3-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.3-nginx-prod/Dockerfile)
+
 ### 8.2
 
-- [8.2](https://github.com/kool-dev/docker-php/blob/master/8.2/Dockerfile)
-- [8.2-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-prod/Dockerfile)
-- [8.2-nginx](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx/Dockerfile)
-- [8.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx-prod/Dockerfile)
+- [8.2](https://github.com/kool-dev/docker-php/blob/master/8.2/Dockerfile) and [8.2-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-prod/Dockerfile)
+- [8.2-nginx](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx/Dockerfile) and [8.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx-prod/Dockerfile)
 
 ### 8.1
 
-- [8.1](https://github.com/kool-dev/docker-php/blob/master/8.1/Dockerfile)
-- [8.1-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-prod/Dockerfile)
-- [8.1-nginx](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx/Dockerfile)
-- [8.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx-prod/Dockerfile)
-
-### 8.0
-
-- [8.0](https://github.com/kool-dev/docker-php/blob/master/8.0/Dockerfile)
-- [8.0-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-prod/Dockerfile)
-- [8.0-nginx](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx/Dockerfile)
-- [8.0-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx-prod/Dockerfile)
+- [8.1](https://github.com/kool-dev/docker-php/blob/master/8.1/Dockerfile) and [8.1-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-prod/Dockerfile)
+- [8.1-nginx](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx/Dockerfile) and [8.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx-prod/Dockerfile)
 
 ### Legacy versions
 
+- [8.0](https://github.com/kool-dev/docker-php/blob/master/8.0/Dockerfile), [8.0-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-prod/Dockerfile), [8.0-nginx](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx/Dockerfile), [8.0-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx-prod/Dockerfile)
 - [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile).
 
 ## More flavours
