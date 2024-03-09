@@ -77,6 +77,7 @@ RUN adduser -D -u 1337 kool \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
 @else
+    && mkdir /tmp/imagick && cd /tmp/imagick \
     && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/7088edc353f53c4bc644573a79cdcd67a726ae16.tar.gz \
     && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
     && phpize \
