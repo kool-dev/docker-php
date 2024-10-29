@@ -32,11 +32,11 @@ RUN adduser -D -u 1337 kool \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
-        imagemagick-dev openldap-dev oniguruma-dev \
+        imagemagick-dev openldap-dev oniguruma-dev libwebp-dev \
         postgresql-dev \
         linux-headers \
     # php-ext
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg \
     && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
@@ -59,14 +59,10 @@ RUN adduser -D -u 1337 kool \
     && pecl install redis \
     && pecl install xdebug \
     && pecl install pcov && docker-php-ext-enable pcov \
-    && mkdir /tmp/imagick && cd /tmp/imagick \
-    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/7088edc353f53c4bc644573a79cdcd67a726ae16.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
     # composer
