@@ -59,8 +59,14 @@ RUN adduser -D -u 1337 kool \
     && pecl install redis \
     && pecl install xdebug \
     && pecl install pcov && docker-php-ext-enable pcov \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
+    && mkdir /tmp/imagick && cd /tmp/imagick \
+    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
+    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
+    && phpize \
+    && ./configure --with-webp=yes \
+    && make \
+    && make install \
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-development" "/usr/local/etc/php/php.ini" \
     # composer
