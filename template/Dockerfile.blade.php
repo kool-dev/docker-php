@@ -34,12 +34,12 @@ RUN adduser -D -u 1337 kool \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
-        imagemagick-dev openldap-dev {{ version_compare($version, '7.4', '>=') ? 'oniguruma-dev' : '' }} \
+        imagemagick-dev openldap-dev {{ version_compare($version, '7.4', '>=') ? 'oniguruma-dev' : '' }} libwebp-dev \
         postgresql-dev \
         linux-headers \
     # php-ext
 @if (version_compare($version, '7.4', '>='))
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg \
 @else
     && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/ \
@@ -73,19 +73,8 @@ RUN adduser -D -u 1337 kool \
     && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : 'xdebug-3.1.6' }} \
     && pecl install pcov && docker-php-ext-enable pcov \
 @endif
-@if (version_compare($version, '8.2', '<='))
     && pecl install imagick \
     && docker-php-ext-enable imagick \
-@else
-    && mkdir /tmp/imagick && cd /tmp/imagick \
-    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/7088edc353f53c4bc644573a79cdcd67a726ae16.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
-@endif
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \
     # composer
