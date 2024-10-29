@@ -57,10 +57,8 @@ RUN adduser -D -u 1337 kool \
         mysqli \
         ftp \
     && pecl install redis \
-
     && pecl install imagick \
     && docker-php-ext-enable imagick \
-
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
