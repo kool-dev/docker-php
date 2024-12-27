@@ -77,6 +77,8 @@ RUN adduser -D -u 1337 kool \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
 @else
+@if (version_compare($version, '8.4', '=='))
+@else
     && mkdir /tmp/imagick && cd /tmp/imagick \
     && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
     && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
@@ -85,6 +87,7 @@ RUN adduser -D -u 1337 kool \
     && make \
     && make install \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+@endif
 @endif
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \

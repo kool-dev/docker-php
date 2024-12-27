@@ -57,14 +57,6 @@ RUN adduser -D -u 1337 kool \
         mysqli \
         ftp \
     && pecl install redis \
-    && mkdir /tmp/imagick && cd /tmp/imagick \
-    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure --with-webp=yes \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && docker-php-ext-enable redis \
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
