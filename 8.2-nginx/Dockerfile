@@ -29,7 +29,7 @@ ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
     NGINX_FASTCGI_BUFFER_SIZE='16k' \
     NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE=true
 
-RUN apk add --no-cache nginx supervisord \
+RUN apk add --no-cache nginx supervisor \
     && chown -R kool:kool /var/lib/nginx \
     && chmod 770 /var/lib/nginx/tmp \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
