@@ -28,6 +28,7 @@ RUN adduser -D -u 1337 kool \
         jpegoptim optipng pngquant gifsicle libldap \
         libpq less \
     # build-deps
+    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
@@ -60,7 +61,6 @@ RUN adduser -D -u 1337 kool \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
