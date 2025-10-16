@@ -31,6 +31,7 @@ RUN adduser -D -u 1337 kool \
         jpegoptim optipng pngquant gifsicle libldap \
         libpq less \
     # build-deps
+    && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
@@ -73,24 +74,9 @@ RUN adduser -D -u 1337 kool \
     && pecl install {{ version_compare($version, '8', '>=') ? 'xdebug' : 'xdebug-3.1.6' }} \
     && pecl install pcov && docker-php-ext-enable pcov \
 @endif
-@if (version_compare($version, '8.2', '<='))
     && pecl install imagick \
     && docker-php-ext-enable imagick \
-@else
-@if (version_compare($version, '8.4', '=='))
-@else
-    && mkdir /tmp/imagick && cd /tmp/imagick \
-    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure --with-webp=yes \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
-@endif
-@endif
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-{{ $prod ? 'production' : 'development' }}" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
