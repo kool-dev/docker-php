@@ -20,7 +20,8 @@ WORKDIR /app
 RUN adduser -D -u 1337 kool \
     && addgroup kool www-data \
     # dockerize
-    && curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz | tar xz \
+    && DOCKERIZE_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
+    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.9.3/dockerize-linux-${DOCKERIZE_ARCH}-v0.9.3.tar.gz" | tar xz \
     && mv dockerize /usr/local/bin/dockerize \
     # deps
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
@@ -28,6 +29,7 @@ RUN adduser -D -u 1337 kool \
         jpegoptim optipng pngquant gifsicle libldap \
         libpq less \
     # build-deps
+    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
         freetype-dev libpng-dev libjpeg-turbo-dev \
         icu-dev libedit-dev libxml2-dev \
@@ -57,16 +59,9 @@ RUN adduser -D -u 1337 kool \
         mysqli \
         ftp \
     && pecl install redis \
-    && mkdir /tmp/imagick && cd /tmp/imagick \
-    && curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize \
-    && ./configure --with-webp=yes \
-    && make \
-    && make install \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && docker-php-ext-enable redis \
-    && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && curl -sS https://getcomposer.org/installer | php -- --1 --install-dir=/usr/local/bin --filename=composer1 \
