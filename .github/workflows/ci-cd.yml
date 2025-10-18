@@ -89,6 +89,8 @@ jobs:
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} dockerize --version
+
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep readline
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m
 
