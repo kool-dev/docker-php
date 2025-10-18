@@ -21,8 +21,8 @@ WORKDIR /app
 RUN adduser -D -u 1337 kool \
     && addgroup kool www-data \
     # dockerize
-    && ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
-    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.9.3/dockerize-linux-${ARCH}-v0.9.3.tar.gz" | tar xz \
+    && DOCKERIZE_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
+    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.9.3/dockerize-linux-${DOCKERIZE_ARCH}-v0.9.3.tar.gz" | tar xz \
     && mv dockerize /usr/local/bin/dockerize \
     # deps
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
