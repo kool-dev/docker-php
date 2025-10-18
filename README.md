@@ -69,6 +69,7 @@ Variable | Default Value | Description
 **PHP_POST_MAX_SIZE** | `25M` | Changes PHP max size of post data allowed
 **PHP_MAX_EXECUTION_TIME** | `30` | Changes PHP maximum time is allowed to run a script
 **PHP_FPM_LISTEN** | `9000` | Changes the PORT address of the FastCGI requests
+**PHP_FPM_PM** | `dynamic` | PHP-FPM process manager strategy
 **PHP_FPM_MAX_CHILDREN** | `10` | Changes the number of child processes to be used on FPM
 **PHP_FPM_REQUEST_TERMINATE_TIMEOUT** | `60` | Changes FPM timeout to serve a single request
 
