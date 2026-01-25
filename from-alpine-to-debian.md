@@ -11,18 +11,18 @@ This document outlines the key differences between the Alpine and Debian variant
 | Package Manager | `apk` | `apt-get` |
 | Shell | `sh` (BusyBox) | `bash` |
 | Privilege Drop | `su-exec` | `gosu` |
-| Supervisord | ochinchina/supervisord (Go static binary) | Official supervisor package (Python) |
-| Architecture | amd64 only (nginx variants) | amd64 + arm64 |
+| Supervisord | Python supervisor (Alpine package) | Python supervisor (Debian package) |
+| Architecture | amd64 + arm64 | amd64 + arm64 |
 | glibc | musl libc | glibc |
 
 ## When to Use Debian
 
 Choose the Debian variant when:
 
-- **ARM64/Apple Silicon support is needed** - The Debian variant has native multi-arch support
 - **Compatibility issues with Alpine** - Some PHP extensions or native libraries may have issues with musl libc
 - **Debugging needs** - Debian includes more debugging tools out of the box
 - **Familiarity** - Teams more familiar with Debian/Ubuntu environments
+- **Native library compatibility** - Some C libraries behave differently with glibc vs musl
 
 ## When to Use Alpine
 
@@ -30,71 +30,51 @@ Choose the Alpine variant when:
 
 - **Minimal image size is critical** - Alpine images are significantly smaller
 - **Security through minimalism** - Smaller attack surface with fewer packages
-- **amd64-only deployments** - No need for ARM64 support
+- **musl libc is acceptable** - Your application has no compatibility issues with musl
+
+**Note:** Both Alpine and Debian variants now support multi-arch (amd64 + arm64).
 
 ## Key Differences in Detail
 
 ### 1. Supervisord Implementation
 
-**Alpine** uses [ochinchina/supervisord](https://github.com/ochinchina/supervisord), a Go-based reimplementation:
+Both **Alpine** and **Debian** now use the official Python-based supervisord package (installed via `apk add supervisor` and `apt-get install supervisor` respectively). The configuration format is identical:
 
 ```ini
-# Alpine supervisor.conf
-[program:nginx]
-depends_on = php-fpm
-command = nginx -g "daemon off;"
-stopasgroup = true
-stderr_logfile = /dev/stderr
-stdout_logfile = /dev/stdout
+# supervisor.conf (both Alpine and Debian)
+[supervisord]
+logfile=/dev/stdout
+logfile_maxbytes=0
+pidfile=/run/supervisord.pid
+nodaemon=true
 
 [program:php-fpm]
 command = php-fpm
+priority = 10
+autorestart = true
 stopasgroup = true
+killasgroup = true
 stderr_logfile = /dev/stderr
 stdout_logfile = /dev/stdout
-```
-
-**Debian** uses the official Python-based supervisord package:
-
-```ini
-# Debian supervisor.conf
-[supervisord]
-nodaemon=true
-user=root
-logfile=/dev/null
-logfile_maxbytes=0
-pidfile=/run/supervisord.pid
-
-[program:php-fpm]
-command=php-fpm
-priority=10
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
+stderr_logfile_maxbytes = 0
+stdout_logfile_maxbytes = 0
 
 [program:nginx]
-command=nginx -g "daemon off;"
-priority=20
-autostart=true
-autorestart=true
-stopasgroup=true
-killasgroup=true
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
+command = nginx -g "daemon off;"
+priority = 20
+autorestart = true
+stopasgroup = true
+killasgroup = true
+stderr_logfile = /dev/stderr
+stdout_logfile = /dev/stdout
+stderr_logfile_maxbytes = 0
+stdout_logfile_maxbytes = 0
 ```
 
-**Key differences:**
-- Alpine uses `depends_on` for process ordering
-- Debian uses `priority` (lower number starts first)
-- Debian requires a `[supervisord]` section with `nodaemon=true`
-- Debian needs `stdout_logfile_maxbytes=0` to disable log rotation for stdout/stderr
+**Key configuration points:**
+- `priority` controls startup order (lower number starts first)
+- `nodaemon=true` keeps supervisord in foreground
+- `stdout_logfile_maxbytes=0` disables log rotation for stdout/stderr
 
 ### 2. Entrypoint Script
 
@@ -155,11 +135,14 @@ To migrate from Alpine to Debian:
    image: kooldev/php:8.4-debian-nginx
    ```
 
-2. **Custom supervisor configs:** If you've customized the supervisor configuration, update to use `priority` instead of `depends_on`
+2. **Shell scripts:** Update any scripts that use:
+   - `su-exec` → `gosu`
+   - BusyBox-specific commands → standard GNU coreutils
+   - `sh` shebang → `bash` shebang (if using bash features)
 
-3. **Shell scripts:** Update any scripts that rely on Alpine-specific paths or BusyBox commands
+3. **Test thoroughly:** The glibc vs musl difference can cause subtle behavior changes in some applications
 
-4. **Test thoroughly:** The glibc vs musl difference can cause subtle behavior changes in some applications
+**Note:** Supervisor configuration format is now identical between Alpine and Debian, so no changes needed for custom supervisor configs.
 
 ## Available Debian Image Tags
 
