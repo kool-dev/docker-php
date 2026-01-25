@@ -39,7 +39,7 @@ jobs:
           load: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
-      - name: Tests
+      - name: Tests - Basic
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
@@ -49,6 +49,41 @@ jobs:
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} composer1 -V
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep readline
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
+
+      - name: Tests - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} dockerize --version
+          # Test dockerize template rendering
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests - PHP Extensions
+        run: |
+          # Core extensions that must be present in all images
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i ldap
+
+      - name: Tests - Production Checks
+        if: matrix.type == '-prod'
+        run: |
+          # OPcache must be enabled in production
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i "Zend OPcache"
+          # Xdebug must NOT be present in production (even when ENABLE_XDEBUG=true)
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      - name: Tests - Development Checks
+        if: matrix.type == ''
+        run: |
+          # pcov should be available in dev
+          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pcov
+          # xdebug should be available when enabled
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -81,7 +116,7 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-node${{ matrix.type }} npm -v
           docker run kooldev/php:${{ matrix.version }}-node${{ matrix.type }} yarn -v
 
-      - name: Tests (nginx)
+      - name: Tests (nginx) - Basic
         run: |
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
@@ -89,14 +124,41 @@ jobs:
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
           docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} dockerize --version
-
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep readline
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m
-
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -T
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord version
+
+      - name: Tests (nginx) - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} dockerize --version
+          # Test dockerize template rendering
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (nginx) - PHP Extensions
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i ldap
+
+      - name: Tests (nginx) - Production Checks
+        if: matrix.type == '-prod'
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i "Zend OPcache"
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      - name: Tests (nginx) - Development Checks
+        if: matrix.type == ''
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pcov
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug
 
       - name: Build and push (nginx)
         uses: docker/build-push-action@v6
@@ -116,10 +178,157 @@ jobs:
           push: true
           tags: kooldev/php:${{ matrix.version }}-node${{ matrix.type }}
 
+  build-debian:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        type: ['', '-prod']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and export to Docker (Debian)
+        uses: docker/build-push-action@v6
+        with:
+          context: 8.4-debian${{ matrix.type }}
+          load: true
+          tags: kooldev/php:8.4-debian${{ matrix.type }}
+
+      - name: Tests (Debian) - Basic
+        run: |
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -v
+          docker run kooldev/php:8.4-debian${{ matrix.type }} composer -V
+          docker run kooldev/php:8.4-debian${{ matrix.type }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} php -v
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} composer -V
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} composer1 -V
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m
+
+      - name: Tests (Debian) - Dockerize
+        run: |
+          docker run kooldev/php:8.4-debian${{ matrix.type }} dockerize --version
+          # Test dockerize template rendering with bash
+          docker run kooldev/php:8.4-debian${{ matrix.type }} bash -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (Debian) - Gosu user switching
+        run: |
+          docker run kooldev/php:8.4-debian${{ matrix.type }} gosu --version
+          # Verify gosu works for user switching
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} id | grep -E "uid=1000|uid=1337"
+
+      - name: Tests (Debian) - PHP Extensions
+        run: |
+          # Same extensions as Alpine for consistency
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i bcmath
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i gd
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i intl
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pdo_mysql
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pdo_pgsql
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i redis
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i zip
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i mbstring
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i ldap
+
+      - name: Tests (Debian) - Production Checks
+        if: matrix.type == '-prod'
+        run: |
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i "Zend OPcache"
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      - name: Tests (Debian) - Development Checks
+        if: matrix.type == ''
+        run: |
+          docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pcov
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug
+
+      - name: Build and push (Debian)
+        uses: docker/build-push-action@v6
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          context: 8.4-debian${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: kooldev/php:8.4-debian${{ matrix.type }}
+
+      - name: Build and export to Docker (Debian nginx)
+        uses: docker/build-push-action@v6
+        with:
+          context: 8.4-debian-nginx${{ matrix.type }}
+          load: true
+          tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
+
+      - name: Tests (Debian nginx) - Basic
+        run: |
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -v
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} composer -V
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian-nginx${{ matrix.type }} php -v
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian-nginx${{ matrix.type }} composer -V
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian-nginx${{ matrix.type }} composer1 -V
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} nginx -v
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} nginx -T
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} supervisord version
+
+      - name: Tests (Debian nginx) - Dockerize
+        run: |
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} dockerize --version
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} bash -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (Debian nginx) - PHP Extensions
+        run: |
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i bcmath
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i gd
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i intl
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pdo_mysql
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pdo_pgsql
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i redis
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i zip
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i mbstring
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i ldap
+
+      - name: Tests (Debian nginx) - Production Checks
+        if: matrix.type == '-prod'
+        run: |
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i "Zend OPcache"
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      - name: Tests (Debian nginx) - Development Checks
+        if: matrix.type == ''
+        run: |
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pcov
+          docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug
+
+      - name: Build and push (Debian nginx)
+        uses: docker/build-push-action@v6
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          context: 8.4-debian-nginx${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
+
   trigger-build-wordpress:
     name: Trigger Wordpress Build
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, build-debian]
     steps:
       - name: Trigger build on kool-dev/docker-wordpress
         uses: benc-uk/workflow-dispatch@v1.2
@@ -132,7 +341,7 @@ jobs:
   trigger-extended-builds:
     name: Trigger Extended Builds
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, build-debian]
     strategy:
       matrix:
         image:

@@ -30,6 +30,11 @@ scripts:
     - docker build -t kooldev/php:8.4-nginx 8.4-nginx
     - docker build -t kooldev/php:8.4-nginx-prod 8.4-nginx-prod
     - docker build -t kooldev/php:8.4-node 8.4-node
+  build-8.4-debian:
+    - docker build -t kooldev/php:8.4-debian 8.4-debian
+    - docker build -t kooldev/php:8.4-debian-prod 8.4-debian-prod
+    - docker build -t kooldev/php:8.4-debian-nginx 8.4-debian-nginx
+    - docker build -t kooldev/php:8.4-debian-nginx-prod 8.4-debian-nginx-prod
   build:
     # parse templates
     - kool run template
@@ -39,3 +44,4 @@ scripts:
     - kool run build-8.2
     - kool run build-8.3
     - kool run build-8.4
+    - kool run build-8.4-debian
