@@ -39,15 +39,15 @@ The core problem: multi-arch builds require the `docker-container` buildx driver
 - [x] Derived image builds can pull base from Docker Hub (just pushed)
 - [x] All images pushed with platforms: linux/amd64,linux/arm64
 
-### US-003: Alpine image builds
+### US-003: Alpine image builds ✅ COMPLETED
 **Description:** As a maintainer, I want Alpine images (8.1-8.4, dev and prod variants) to build, test, and push correctly.
 
 **Acceptance Criteria:**
-- [ ] Matrix covers versions: 8.1, 8.2, 8.3, 8.4
-- [ ] Each version builds both dev and prod variants in same job (no duplicate base builds)
-- [ ] Base, nginx, and node images all build and test locally per version
-- [ ] Base images push before nginx/node images (job dependency)
-- [ ] All existing tests preserved
+- [x] Matrix covers versions: 8.1, 8.2, 8.3, 8.4
+- [x] Each version builds both dev and prod variants in same job (no duplicate base builds)
+- [x] Base, nginx, and node images all build and test locally per version
+- [x] Base images push before nginx/node images (job dependency)
+- [x] All existing tests preserved
 
 ### US-004: Debian image builds
 **Description:** As a maintainer, I want Debian images (8.4, dev and prod variants) to build, test, and push correctly.
