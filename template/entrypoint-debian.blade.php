@@ -3,11 +3,8 @@ set -e
 
 @unless ($prod)
 if [ "$ENABLE_XDEBUG" = "true" ]; then
-    docker-php-ext-enable xdebug >> /dev/null 2>&1
-
-    if [ $? != "0" ]; then
+    if ! docker-php-ext-enable xdebug >> /dev/null 2>&1; then
         echo "[ERROR] An error happened enabling xdebug"
-
         exit 1
     fi
 fi

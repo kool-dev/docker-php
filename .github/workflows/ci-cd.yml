@@ -229,8 +229,8 @@ jobs:
       - name: Tests (Debian) - Gosu user switching
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} gosu --version
-          # Verify gosu works for user switching
-          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} id | grep -E "uid=1000|uid=1337"
+          # Verify gosu works for user switching - should be uid=1000 when ASUSER=1000
+          docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} id | grep "uid=1000"
 
       - name: Tests (Debian) - PHP Extensions
         run: |
