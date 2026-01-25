@@ -1,4 +1,4 @@
-FROM php:8.4-fpm
+FROM php:8.4-fpm-bookworm
 
 ENV ASUSER= \
     UID= \
@@ -30,9 +30,9 @@ RUN useradd -m -u 1337 kool \
     # deps
     && apt-get update && apt-get install -y --no-install-recommends \
         bash sed git openssh-client procps \
-        libfreetype6 libpng16-16t64 libjpeg62-turbo libzip5 ghostscript imagemagick \
+        libfreetype6 libpng16-16 libjpeg62-turbo libzip4 ghostscript imagemagick \
         jpegoptim optipng pngquant gifsicle \
-        libldap2 libpq5 libicu76 less \
+        libldap-2.5-0 libpq5 libicu72 less \
     # build-deps
     && cp "/usr/local/etc/php/php.ini-production" "/usr/local/etc/php/php.ini" \
     && apt-get install -y --no-install-recommends \

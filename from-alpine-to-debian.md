@@ -6,7 +6,7 @@ This document outlines the key differences between the Alpine and Debian variant
 
 | Feature | Alpine | Debian |
 |---------|--------|--------|
-| Base Image | `php:8.x-fpm-alpine` | `php:8.x-fpm` (Debian) |
+| Base Image | `php:8.x-fpm-alpine` | `php:8.x-fpm-bookworm` (Debian 12 stable) |
 | Image Size | Smaller (~150MB) | Larger (~400MB) |
 | Package Manager | `apk` | `apt-get` |
 | Shell | `sh` (BusyBox) | `bash` |

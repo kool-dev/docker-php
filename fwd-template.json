@@ -488,7 +488,7 @@
         {
             "name": "8.4-debian",
             "data": {
-                "from": "php:8.4-fpm",
+                "from": "php:8.4-fpm-bookworm",
                 "prod": false,
                 "nginx": false,
                 "version": "8.4"
@@ -515,7 +515,7 @@
         {
             "name": "8.4-debian-prod",
             "data": {
-                "from": "php:8.4-fpm",
+                "from": "php:8.4-fpm-bookworm",
                 "prod": true,
                 "nginx": false,
                 "version": "8.4"

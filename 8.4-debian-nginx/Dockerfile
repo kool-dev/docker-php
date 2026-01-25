@@ -1,4 +1,4 @@
-FROM debian AS cert
+FROM debian:bookworm AS cert
 
 WORKDIR /kool/ssl
 
