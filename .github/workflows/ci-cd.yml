@@ -8,19 +8,18 @@ on:
 
 jobs:
   # ===========================================
-  # Alpine Images (base + nginx in same job)
+  # Alpine: Build and Test (all variants per version)
   # ===========================================
-  build-alpine:
+  build-test-alpine:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         version: ["8.1", "8.2", "8.3", "8.4"]
-        type: ["", "-prod"]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -30,207 +29,204 @@ jobs:
         with:
           driver: docker
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # ---- BASE IMAGE ----
-      - name: Build base image
-        uses: docker/build-push-action@v6
-        with:
-          context: ${{ matrix.version }}${{ matrix.type }}
-          load: true
-          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
-
-      - name: Tests (base) - Basic
-        run: |
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer1 -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}${{ matrix.type }} composer1 -V
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep readline
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
-
-      - name: Tests (base) - Dockerize
-        run: |
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} dockerize --version
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
-
-      - name: Tests (base) - PHP Extensions
-        run: |
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i bcmath
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i gd
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i intl
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pdo_mysql
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pdo_pgsql
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i redis
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i zip
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i mbstring
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i ldap
-
-      - name: Tests (base) - Production Checks
-        if: matrix.type == '-prod'
-        run: |
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i "Zend OPcache"
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
-
-      - name: Tests (base) - Development Checks
-        if: matrix.type == ''
-        run: |
-          docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pcov
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug
-
-      # ---- NGINX IMAGE ----
-      - name: Build nginx image
-        uses: docker/build-push-action@v6
-        with:
-          context: ${{ matrix.version }}-nginx${{ matrix.type }}
-          build-contexts: |
-            kooldev/php:${{ matrix.version }}${{ matrix.type }}=docker-image://kooldev/php:${{ matrix.version }}${{ matrix.type }}
-          load: true
-          tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
-
-      - name: Tests (nginx) - Basic
-        run: |
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -v
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer -V
-          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} composer1 -V
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep readline
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -v
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} nginx -T
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} supervisord --version
-
-      - name: Tests (nginx) - Dockerize
-        run: |
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} dockerize --version
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
-
-      - name: Tests (nginx) - PHP Extensions
-        run: |
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i bcmath
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i gd
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i intl
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pdo_mysql
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pdo_pgsql
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i redis
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i zip
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i mbstring
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i ldap
-
-      - name: Tests (nginx) - Production Checks
-        if: matrix.type == '-prod'
-        run: |
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i "Zend OPcache"
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
-
-      - name: Tests (nginx) - Development Checks
-        if: matrix.type == ''
-        run: |
-          docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pcov
-          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug
-
-      # ---- PUSH IMAGES (multi-arch) ----
-      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
-        uses: docker/setup-buildx-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-
-      - name: Push base image
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: ${{ matrix.version }}${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
-
-      - name: Push nginx image
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: ${{ matrix.version }}-nginx${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
-
-  # ===========================================
-  # Alpine Node Images (depends on base)
-  # ===========================================
-  build-alpine-node:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        version: ["8.1", "8.2", "8.3", "8.4"]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5.0.0
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Setup Docker Buildx (docker driver for local builds)
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # Build base first (needed for node)
-      - name: Build base image (for node dependency)
+      # ========================================
+      # BASE DEV IMAGE
+      # ========================================
+      - name: Build base dev image
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.version }}
           load: true
           tags: kooldev/php:${{ matrix.version }}
 
+      - name: Tests (base dev) - Basic
+        run: |
+          docker run kooldev/php:${{ matrix.version }} php -v
+          docker run kooldev/php:${{ matrix.version }} composer -V
+          docker run kooldev/php:${{ matrix.version }} composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }} php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }} composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }} composer1 -V
+          docker run kooldev/php:${{ matrix.version }} php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }} php -m
+
+      - name: Tests (base dev) - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }} dockerize --version
+          docker run kooldev/php:${{ matrix.version }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (base dev) - PHP Extensions
+        run: |
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i ldap
+
+      - name: Tests (base dev) - Development Checks
+        run: |
+          docker run kooldev/php:${{ matrix.version }} php -m | grep -i pcov
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }} php -m | grep -i xdebug
+
+      # ========================================
+      # BASE PROD IMAGE
+      # ========================================
+      - name: Build base prod image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}-prod
+          load: true
+          tags: kooldev/php:${{ matrix.version }}-prod
+
+      - name: Tests (base prod) - Basic
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-prod php -v
+          docker run kooldev/php:${{ matrix.version }}-prod composer -V
+          docker run kooldev/php:${{ matrix.version }}-prod composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-prod php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-prod composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-prod composer1 -V
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-prod php -m
+
+      - name: Tests (base prod) - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-prod dockerize --version
+          docker run kooldev/php:${{ matrix.version }}-prod sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (base prod) - PHP Extensions
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i ldap
+
+      - name: Tests (base prod) - Production Checks
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-prod php -m | grep -i "Zend OPcache"
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-prod php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      # ========================================
+      # NGINX DEV IMAGE (uses local base dev)
+      # ========================================
+      - name: Build nginx dev image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}-nginx
+          load: true
+          tags: kooldev/php:${{ matrix.version }}-nginx
+
+      - name: Tests (nginx dev) - Basic
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx php -v
+          docker run kooldev/php:${{ matrix.version }}-nginx composer -V
+          docker run kooldev/php:${{ matrix.version }}-nginx composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx composer1 -V
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx php -m
+          docker run kooldev/php:${{ matrix.version }}-nginx nginx -v
+          docker run kooldev/php:${{ matrix.version }}-nginx nginx -T
+          docker run kooldev/php:${{ matrix.version }}-nginx supervisord --version
+
+      - name: Tests (nginx dev) - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx dockerize --version
+          docker run kooldev/php:${{ matrix.version }}-nginx sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (nginx dev) - PHP Extensions
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i ldap
+
+      - name: Tests (nginx dev) - Development Checks
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx php -m | grep -i pcov
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx php -m | grep -i xdebug
+
+      # ========================================
+      # NGINX PROD IMAGE (uses local base prod)
+      # ========================================
+      - name: Build nginx prod image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}-nginx-prod
+          load: true
+          tags: kooldev/php:${{ matrix.version }}-nginx-prod
+
+      - name: Tests (nginx prod) - Basic
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -v
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod composer -V
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod composer1 -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx-prod php -v
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx-prod composer -V
+          docker run -e ASUSER=1000 kooldev/php:${{ matrix.version }}-nginx-prod composer1 -V
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep readline
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx-prod php -m
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod nginx -v
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod nginx -T
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod supervisord --version
+
+      - name: Tests (nginx prod) - Dockerize
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod dockerize --version
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
+
+      - name: Tests (nginx prod) - PHP Extensions
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i bcmath
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i gd
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i intl
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i pdo_mysql
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i pdo_pgsql
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i redis
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i zip
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i mbstring
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i ldap
+
+      - name: Tests (nginx prod) - Production Checks
+        run: |
+          docker run kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i "Zend OPcache"
+          docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx-prod php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
+
+      # ========================================
+      # NODE IMAGE (uses local base dev)
+      # ========================================
       - name: Build node image
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.version }}-node
-          build-contexts: |
-            kooldev/php:${{ matrix.version }}=docker-image://kooldev/php:${{ matrix.version }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-node
 
-      - name: Tests (Node)
+      - name: Tests (node) - Basic
         run: |
           docker run kooldev/php:${{ matrix.version }}-node node -v
           docker run kooldev/php:${{ matrix.version }}-node npm -v
           docker run kooldev/php:${{ matrix.version }}-node yarn -v
 
-      # ---- PUSH IMAGE (multi-arch) ----
-      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
-        uses: docker/setup-buildx-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-
-      - name: Push node image
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: ${{ matrix.version }}-node
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:${{ matrix.version }}-node
-
   # ===========================================
-  # Debian Images (base + nginx in same job)
+  # Debian: Build and Test (base + nginx per type)
   # ===========================================
-  build-debian:
+  build-test-debian:
     runs-on: ubuntu-latest
 
     strategy:
@@ -239,7 +235,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v4
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -249,14 +245,9 @@ jobs:
         with:
           driver: docker
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # ---- BASE IMAGE ----
+      # ========================================
+      # BASE IMAGE (DEBIAN)
+      # ========================================
       - name: Build base image (Debian)
         uses: docker/build-push-action@v6
         with:
@@ -309,13 +300,13 @@ jobs:
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug
 
-      # ---- NGINX IMAGE ----
+      # ========================================
+      # NGINX IMAGE (DEBIAN - uses local base)
+      # ========================================
       - name: Build nginx image (Debian)
         uses: docker/build-push-action@v6
         with:
           context: 8.4-debian-nginx${{ matrix.type }}
-          build-contexts: |
-            kooldev/php:8.4-debian${{ matrix.type }}=docker-image://kooldev/php:8.4-debian${{ matrix.type }}
           load: true
           tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
 
@@ -331,7 +322,7 @@ jobs:
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} nginx -v
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} nginx -T
-          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} supervisord version
+          docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} supervisord --version
 
       - name: Tests (Debian nginx) - Dockerize
         run: |
@@ -361,62 +352,3 @@ jobs:
         run: |
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug
-
-      # ---- PUSH IMAGES (multi-arch) ----
-      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
-        uses: docker/setup-buildx-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-
-      - name: Push base image (Debian)
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: 8.4-debian${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:8.4-debian${{ matrix.type }}
-
-      - name: Push nginx image (Debian)
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: 8.4-debian-nginx${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
-
-  # ===========================================
-  # Downstream Triggers
-  # ===========================================
-  trigger-build-wordpress:
-    name: Trigger Wordpress Build
-    runs-on: ubuntu-latest
-    needs: [build-alpine, build-alpine-node, build-debian]
-    steps:
-      - name: Trigger build on kool-dev/docker-wordpress
-        uses: benc-uk/workflow-dispatch@v1.2
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          workflow: CI/CD
-          repo: kool-dev/docker-wordpress
-          token: ${{ secrets.WORKFLOW_TOKEN }}
-
-  trigger-extended-builds:
-    name: Trigger Extended Builds
-    runs-on: ubuntu-latest
-    needs: [build-alpine, build-alpine-node, build-debian]
-    strategy:
-      matrix:
-        image:
-          - kool-dev/docker-php-sqlsrv
-          - kool-dev/docker-php-swoole
-          - kool-dev/docker-phpqa
-    steps:
-      - name: Trigger build on ${{ matrix.image }}
-        uses: benc-uk/workflow-dispatch@v1.2
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          workflow: CI/CD
-          ref: refs/heads/main
-          repo: ${{ matrix.image }}
-          token: ${{ secrets.WORKFLOW_TOKEN }}
