@@ -25,8 +25,10 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Setup Docker Buildx
+      - name: Setup Docker Buildx (docker driver for local builds)
         uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -83,15 +85,6 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Push base image
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: ${{ matrix.version }}${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
-
       # ---- NGINX IMAGE ----
       - name: Build nginx image
         uses: docker/build-push-action@v6
@@ -145,6 +138,20 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug
 
+      # ---- PUSH IMAGES (multi-arch) ----
+      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
+        uses: docker/setup-buildx-action@v3
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+
+      - name: Push base image
+        uses: docker/build-push-action@v6
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          context: ${{ matrix.version }}${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+
       - name: Push nginx image
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
@@ -171,8 +178,10 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Setup Docker Buildx
+      - name: Setup Docker Buildx (docker driver for local builds)
         uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -204,6 +213,11 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-node npm -v
           docker run kooldev/php:${{ matrix.version }}-node yarn -v
 
+      # ---- PUSH IMAGE (multi-arch) ----
+      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
+        uses: docker/setup-buildx-action@v3
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+
       - name: Push node image
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
@@ -230,8 +244,10 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Setup Docker Buildx
+      - name: Setup Docker Buildx (docker driver for local builds)
         uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -293,15 +309,6 @@ jobs:
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Push base image (Debian)
-        uses: docker/build-push-action@v6
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          context: 8.4-debian${{ matrix.type }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: kooldev/php:8.4-debian${{ matrix.type }}
-
       # ---- NGINX IMAGE ----
       - name: Build nginx image (Debian)
         uses: docker/build-push-action@v6
@@ -354,6 +361,20 @@ jobs:
         run: |
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug
+
+      # ---- PUSH IMAGES (multi-arch) ----
+      - name: Setup Docker Buildx (docker-container driver for multi-arch push)
+        uses: docker/setup-buildx-action@v3
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+
+      - name: Push base image (Debian)
+        uses: docker/build-push-action@v6
+        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          context: 8.4-debian${{ matrix.type }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: kooldev/php:8.4-debian${{ matrix.type }}
 
       - name: Push nginx image (Debian)
         uses: docker/build-push-action@v6
