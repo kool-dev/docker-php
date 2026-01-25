@@ -61,16 +61,16 @@ The core problem: multi-arch builds require the `docker-container` buildx driver
 - [x] Debian-specific tests preserved (gosu, bash)
 - [x] Supervisord test uses correct flag: `supervisord --version` (not `supervisord version`)
 
-### US-005: Downstream triggers
+### US-005: Downstream triggers ✅ COMPLETED
 **Description:** As a maintainer, I want downstream repositories to be triggered after all images are successfully pushed.
 
 **Acceptance Criteria:**
-- [ ] Triggers only run on master branch and correct repository
-- [ ] Triggers wait for ALL push jobs to complete
-- [ ] Trigger: kool-dev/docker-wordpress
-- [ ] Trigger: kool-dev/docker-php-sqlsrv
-- [ ] Trigger: kool-dev/docker-php-swoole
-- [ ] Trigger: kool-dev/docker-phpqa
+- [x] Triggers only run on master branch and correct repository
+- [x] Triggers wait for ALL push jobs to complete
+- [x] Trigger: kool-dev/docker-wordpress
+- [x] Trigger: kool-dev/docker-php-sqlsrv
+- [x] Trigger: kool-dev/docker-php-swoole
+- [x] Trigger: kool-dev/docker-phpqa
 
 ## Functional Requirements
 

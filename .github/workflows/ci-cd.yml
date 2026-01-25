@@ -541,3 +541,33 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
+
+  # ===========================================
+  # DOWNSTREAM TRIGGERS (master branch only)
+  # ===========================================
+  # These jobs trigger builds in dependent repositories after all
+  # images have been successfully pushed to Docker Hub.
+
+  trigger-downstream:
+    needs:
+      - push-alpine-nginx
+      - push-alpine-node
+      - push-debian-nginx
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        repo:
+          - kool-dev/docker-wordpress
+          - kool-dev/docker-php-sqlsrv
+          - kool-dev/docker-php-swoole
+          - kool-dev/docker-phpqa
+
+    steps:
+      - name: Trigger ${{ matrix.repo }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: docker-php-updated
