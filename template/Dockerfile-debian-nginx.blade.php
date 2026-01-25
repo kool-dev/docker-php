@@ -29,10 +29,7 @@ ENV PHP_FPM_LISTEN=/run/php-fpm.sock \
     NGINX_FASTCGI_BUFFER_SIZE='16k' \
     NGINX_ENTRYPOINT_WORKER_PROCESSES_AUTOTUNE=true
 
-RUN SUPERVISORD_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
-    && curl -L "https://github.com/ochinchina/supervisord/releases/download/v0.6.3/supervisord_static_0.6.3_linux_${SUPERVISORD_ARCH}" -o /usr/local/bin/supervisord \
-    && chmod +x /usr/local/bin/supervisord \
-    && apt-get update && apt-get install -y --no-install-recommends nginx wget \
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor nginx wget \
     && chown -R kool:kool /var/lib/nginx \
     && chmod 770 /var/lib/nginx \
     && ln -sf /dev/stdout /var/log/nginx/access.log \

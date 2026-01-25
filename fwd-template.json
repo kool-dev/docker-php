@@ -562,7 +562,7 @@
                 },
                 {
                     "name": "supervisor.conf",
-                    "path": "template/supervisor-conf"
+                    "path": "template/supervisor-conf-debian"
                 }
             ]
         },
@@ -589,7 +589,7 @@
                 },
                 {
                     "name": "supervisor.conf",
-                    "path": "template/supervisor-conf"
+                    "path": "template/supervisor-conf-debian"
                 }
             ]
         }
