@@ -8,9 +8,9 @@ on:
 
 jobs:
   # ===========================================
-  # Alpine Base Images (Phase 1)
+  # Alpine Images (base + nginx in same job)
   # ===========================================
-  build-alpine-base:
+  build-alpine:
     runs-on: ubuntu-latest
 
     strategy:
@@ -35,14 +35,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and export to Docker
+      # ---- BASE IMAGE ----
+      - name: Build base image
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.version }}${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
-      - name: Tests - Basic
+      - name: Tests (base) - Basic
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -v
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} composer -V
@@ -53,12 +54,12 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep readline
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m
 
-      - name: Tests - Dockerize
+      - name: Tests (base) - Dockerize
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} dockerize --version
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
 
-      - name: Tests - PHP Extensions
+      - name: Tests (base) - PHP Extensions
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i bcmath
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i gd
@@ -70,19 +71,19 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i mbstring
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i ldap
 
-      - name: Tests - Production Checks
+      - name: Tests (base) - Production Checks
         if: matrix.type == '-prod'
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i "Zend OPcache"
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
 
-      - name: Tests - Development Checks
+      - name: Tests (base) - Development Checks
         if: matrix.type == ''
         run: |
           docker run kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Build and push
+      - name: Push base image
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -91,39 +92,13 @@ jobs:
           push: true
           tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
 
-  # ===========================================
-  # Alpine Nginx Images (Phase 2 - depends on base)
-  # ===========================================
-  build-alpine-nginx:
-    runs-on: ubuntu-latest
-    needs: build-alpine-base
-
-    strategy:
-      matrix:
-        version: ["8.1", "8.2", "8.3", "8.4"]
-        type: ["", "-prod"]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5.0.0
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and export to Docker (nginx)
+      # ---- NGINX IMAGE ----
+      - name: Build nginx image
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.version }}-nginx${{ matrix.type }}
+          build-contexts: |
+            kooldev/php:${{ matrix.version }}${{ matrix.type }}=docker-image://kooldev/php:${{ matrix.version }}${{ matrix.type }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
@@ -170,7 +145,7 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Build and push (nginx)
+      - name: Push nginx image
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -180,11 +155,10 @@ jobs:
           tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
 
   # ===========================================
-  # Alpine Node Images (Phase 2 - depends on base)
+  # Alpine Node Images (depends on base)
   # ===========================================
   build-alpine-node:
     runs-on: ubuntu-latest
-    needs: build-alpine-base
 
     strategy:
       matrix:
@@ -207,10 +181,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and export to Docker (Node)
+      # Build base first (needed for node)
+      - name: Build base image (for node dependency)
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}
+          load: true
+          tags: kooldev/php:${{ matrix.version }}
+
+      - name: Build node image
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.version }}-node
+          build-contexts: |
+            kooldev/php:${{ matrix.version }}=docker-image://kooldev/php:${{ matrix.version }}
           load: true
           tags: kooldev/php:${{ matrix.version }}-node
 
@@ -220,7 +204,7 @@ jobs:
           docker run kooldev/php:${{ matrix.version }}-node npm -v
           docker run kooldev/php:${{ matrix.version }}-node yarn -v
 
-      - name: Build and push (Node)
+      - name: Push node image
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -230,9 +214,9 @@ jobs:
           tags: kooldev/php:${{ matrix.version }}-node
 
   # ===========================================
-  # Debian Base Images (Phase 1)
+  # Debian Images (base + nginx in same job)
   # ===========================================
-  build-debian-base:
+  build-debian:
     runs-on: ubuntu-latest
 
     strategy:
@@ -256,14 +240,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and export to Docker (Debian base)
+      # ---- BASE IMAGE ----
+      - name: Build base image (Debian)
         uses: docker/build-push-action@v6
         with:
           context: 8.4-debian${{ matrix.type }}
           load: true
           tags: kooldev/php:8.4-debian${{ matrix.type }}
 
-      - name: Tests (Debian) - Basic
+      - name: Tests (Debian base) - Basic
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -v
           docker run kooldev/php:8.4-debian${{ matrix.type }} composer -V
@@ -274,17 +259,17 @@ jobs:
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep readline
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m
 
-      - name: Tests (Debian) - Dockerize
+      - name: Tests (Debian base) - Dockerize
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} dockerize --version
           docker run kooldev/php:8.4-debian${{ matrix.type }} bash -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl && TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out && cat /tmp/test.out | grep hello'
 
-      - name: Tests (Debian) - Gosu user switching
+      - name: Tests (Debian base) - Gosu user switching
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} gosu --version
           docker run -e ASUSER=1000 kooldev/php:8.4-debian${{ matrix.type }} id | grep "uid=1000"
 
-      - name: Tests (Debian) - PHP Extensions
+      - name: Tests (Debian base) - PHP Extensions
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i bcmath
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i gd
@@ -296,19 +281,19 @@ jobs:
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i mbstring
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i ldap
 
-      - name: Tests (Debian) - Production Checks
+      - name: Tests (Debian base) - Production Checks
         if: matrix.type == '-prod'
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i "Zend OPcache"
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug && exit 1 || echo "OK: xdebug not in prod"
 
-      - name: Tests (Debian) - Development Checks
+      - name: Tests (Debian base) - Development Checks
         if: matrix.type == ''
         run: |
           docker run kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Build and push (Debian base)
+      - name: Push base image (Debian)
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -317,38 +302,13 @@ jobs:
           push: true
           tags: kooldev/php:8.4-debian${{ matrix.type }}
 
-  # ===========================================
-  # Debian Nginx Images (Phase 2 - depends on base)
-  # ===========================================
-  build-debian-nginx:
-    runs-on: ubuntu-latest
-    needs: build-debian-base
-
-    strategy:
-      matrix:
-        type: ["", "-prod"]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5.0.0
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and export to Docker (Debian nginx)
+      # ---- NGINX IMAGE ----
+      - name: Build nginx image (Debian)
         uses: docker/build-push-action@v6
         with:
           context: 8.4-debian-nginx${{ matrix.type }}
+          build-contexts: |
+            kooldev/php:8.4-debian${{ matrix.type }}=docker-image://kooldev/php:8.4-debian${{ matrix.type }}
           load: true
           tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
 
@@ -395,7 +355,7 @@ jobs:
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug
 
-      - name: Build and push (Debian nginx)
+      - name: Push nginx image (Debian)
         uses: docker/build-push-action@v6
         if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
@@ -405,12 +365,12 @@ jobs:
           tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
 
   # ===========================================
-  # Downstream Triggers (after all builds complete)
+  # Downstream Triggers
   # ===========================================
   trigger-build-wordpress:
     name: Trigger Wordpress Build
     runs-on: ubuntu-latest
-    needs: [build-alpine-nginx, build-alpine-node, build-debian-nginx]
+    needs: [build-alpine, build-alpine-node, build-debian]
     steps:
       - name: Trigger build on kool-dev/docker-wordpress
         uses: benc-uk/workflow-dispatch@v1.2
@@ -423,7 +383,7 @@ jobs:
   trigger-extended-builds:
     name: Trigger Extended Builds
     runs-on: ubuntu-latest
-    needs: [build-alpine-nginx, build-alpine-node, build-debian-nginx]
+    needs: [build-alpine, build-alpine-node, build-debian]
     strategy:
       matrix:
         image:
