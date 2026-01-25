@@ -49,17 +49,17 @@ The core problem: multi-arch builds require the `docker-container` buildx driver
 - [x] Base images push before nginx/node images (job dependency)
 - [x] All existing tests preserved
 
-### US-004: Debian image builds
+### US-004: Debian image builds ✅ COMPLETED
 **Description:** As a maintainer, I want Debian images (8.4, dev and prod variants) to build, test, and push correctly.
 
 **Acceptance Criteria:**
-- [ ] Matrix covers types: "" (dev), "-prod"
-- [ ] Version: 8.4 only (for now)
-- [ ] Base images build and test locally
-- [ ] Nginx images build and test locally (using local base)
-- [ ] Base images push before nginx images (job dependency)
-- [ ] Debian-specific tests preserved (gosu, bash)
-- [ ] Supervisord test uses correct flag: `supervisord --version` (not `supervisord version`)
+- [x] Matrix covers types: "" (dev), "-prod"
+- [x] Version: 8.4 only (for now)
+- [x] Base images build and test locally
+- [x] Nginx images build and test locally (using local base)
+- [x] Base images push before nginx images (job dependency)
+- [x] Debian-specific tests preserved (gosu, bash)
+- [x] Supervisord test uses correct flag: `supervisord --version` (not `supervisord version`)
 
 ### US-005: Downstream triggers
 **Description:** As a maintainer, I want downstream repositories to be triggered after all images are successfully pushed.
