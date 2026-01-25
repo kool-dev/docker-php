@@ -40,12 +40,11 @@ server {
     add_header X-Frame-Options "SAMEORIGIN";
 
     # basic H5BP suggestions
-    include h5bp/internet_explorer/x-ua-compatible.conf;
     include h5bp/security/referrer-policy.conf;
     include h5bp/security/x-content-type-options.conf;
-    include h5bp/security/x-xss-protection.conf;
+    include h5bp/cross-origin/requests.conf;
 
     # performance enhancements (mostly for caching static data)
     include h5bp/web_performance/cache-file-descriptors.conf;
-    include h5bp/web_performance/pre-compressed_content_gzip.conf;
+    include h5bp/web_performance/compression.conf;
 }
