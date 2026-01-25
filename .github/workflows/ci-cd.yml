@@ -352,3 +352,192 @@ jobs:
         run: |
           docker run kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i pcov
           docker run -e ENABLE_XDEBUG=true kooldev/php:8.4-debian-nginx${{ matrix.type }} php -m | grep -i xdebug
+
+  # ===========================================
+  # PUSH JOBS (master branch only)
+  # ===========================================
+  # These jobs use docker-container driver (default) for multi-arch builds.
+  # They rebuild images because docker-container driver cannot access
+  # locally built images from the test jobs.
+
+  # -------------------------------------------
+  # Alpine Push: Base Images
+  # -------------------------------------------
+  push-alpine-base:
+    needs: build-test-alpine
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: ["8.1", "8.2", "8.3", "8.4"]
+        type: ["", "-prod"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push base image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}${{ matrix.type }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: kooldev/php:${{ matrix.version }}${{ matrix.type }}
+
+  # -------------------------------------------
+  # Alpine Push: Nginx Images (depends on base)
+  # -------------------------------------------
+  push-alpine-nginx:
+    needs: push-alpine-base
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: ["8.1", "8.2", "8.3", "8.4"]
+        type: ["", "-prod"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push nginx image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}-nginx${{ matrix.type }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: kooldev/php:${{ matrix.version }}-nginx${{ matrix.type }}
+
+  # -------------------------------------------
+  # Alpine Push: Node Images (depends on base)
+  # -------------------------------------------
+  push-alpine-node:
+    needs: push-alpine-base
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: ["8.1", "8.2", "8.3", "8.4"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push node image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.version }}-node
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: kooldev/php:${{ matrix.version }}-node
+
+  # -------------------------------------------
+  # Debian Push: Base Images
+  # -------------------------------------------
+  push-debian-base:
+    needs: build-test-debian
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        type: ["", "-prod"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push base image (Debian)
+        uses: docker/build-push-action@v6
+        with:
+          context: 8.4-debian${{ matrix.type }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: kooldev/php:8.4-debian${{ matrix.type }}
+
+  # -------------------------------------------
+  # Debian Push: Nginx Images (depends on base)
+  # -------------------------------------------
+  push-debian-nginx:
+    needs: push-debian-base
+    if: github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        type: ["", "-prod"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push nginx image (Debian)
+        uses: docker/build-push-action@v6
+        with:
+          context: 8.4-debian-nginx${{ matrix.type }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: kooldev/php:8.4-debian-nginx${{ matrix.type }}
