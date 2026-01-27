@@ -20,7 +20,7 @@ server {
     error_page 404 /index.php;
 
     location / {
-        try_files $uri /@{{ .Env.NGINX_INDEX }}?$query_string;
+        try_files $uri $uri/ /@{{ .Env.NGINX_INDEX }}?$query_string;
     }
 
     location ~ \.php$ {
