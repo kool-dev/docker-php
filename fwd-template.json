@@ -592,6 +592,235 @@
                     "path": "template/supervisor-conf"
                 }
             ]
+        },
+        {
+            "name": "8.5",
+            "data": {
+                "from": "php:8.5-fpm-alpine",
+                "prod": false,
+                "nginx": false,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-prod",
+            "data": {
+                "from": "php:8.5-fpm-alpine",
+                "prod": true,
+                "nginx": false,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-nginx",
+            "data": {
+                "from": "kooldev/php:8.5",
+                "prod": false,
+                "nginx": true,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.5-prod",
+                "prod": true,
+                "nginx": true,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-node",
+            "data": {
+                "from": "kooldev/php:8.5",
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-node"
+                }
+            ]
+        },
+        {
+            "name": "8.5-debian",
+            "data": {
+                "from": "php:8.5-fpm-bookworm",
+                "prod": false,
+                "nginx": false,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-debian"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint-debian"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-debian-prod",
+            "data": {
+                "from": "php:8.5-fpm-bookworm",
+                "prod": true,
+                "nginx": false,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-debian"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint-debian"
+                },
+                {
+                    "name": "kool.ini",
+                    "path": "template/kool-ini"
+                },
+                {
+                    "name": "zz-docker.conf",
+                    "path": "template/zz-docker-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-debian-nginx",
+            "data": {
+                "from": "kooldev/php:8.5-debian",
+                "prod": false,
+                "nginx": true,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-debian-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint-debian"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
+        },
+        {
+            "name": "8.5-debian-nginx-prod",
+            "data": {
+                "from": "kooldev/php:8.5-debian-prod",
+                "prod": true,
+                "nginx": true,
+                "version": "8.5"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile-debian-nginx"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint-debian"
+                },
+                {
+                    "name": "default.tmpl",
+                    "path": "template/default-tmpl"
+                },
+                {
+                    "name": "supervisor.conf",
+                    "path": "template/supervisor-conf"
+                }
+            ]
         }
     ]
 }
