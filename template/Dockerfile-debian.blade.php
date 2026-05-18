@@ -55,7 +55,7 @@ RUN useradd -m -u 1337 kool \
         intl \
         ldap \
         mbstring \
-@if ($prod)
+@if ($prod && version_compare($version, '8.5', '<'))
         opcache \
 @endif
         pcntl \

@@ -47,7 +47,6 @@ RUN adduser -D -u 1337 kool \
         intl \
         ldap \
         mbstring \
-        opcache \
         pcntl \
         pdo \
         pdo_mysql \
