@@ -2,7 +2,7 @@
 
 ## Description
 
-Minimal PHP Docker image focused on Laravel applications. It's use is intended for [kool.dev](https://github.com/kool-dev/kool), but can fit in any other PHP use-case.
+PHP Docker images focused on Laravel applications. They're intended for [kool.dev](https://github.com/kool-dev/kool), but can fit other PHP use cases.
 
 The images with Nginx include [`h5bp/server-configs-nginx`](https://github.com/h5bp/server-configs-nginx) with a hand picked set of configuration active by default. So if you want to change or add a new server configuration you can `include h5bp/...` as you see fit.
 
@@ -20,35 +20,39 @@ Simplest example:
 
 The image built is [`kooldev/php`](https://hub.docker.com/r/kooldev/php/tags?page=1&ordering=last_updated) which has a bunch of tags available:
 
+The default images use Alpine Linux. PHP 8.4 and 8.5 also offer Debian Bookworm variants. All maintained tags are published for `linux/amd64` and `linux/arm64`.
+
 ### 8.5
 
 - [8.5](https://github.com/kool-dev/docker-php/blob/master/8.5/Dockerfile) and [8.5-prod](https://github.com/kool-dev/docker-php/blob/master/8.5-prod/Dockerfile)
 - [8.5-nginx](https://github.com/kool-dev/docker-php/blob/master/8.5-nginx/Dockerfile) and [8.5-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.5-nginx-prod/Dockerfile)
+- [8.5-node](https://github.com/kool-dev/docker-php/blob/master/8.5-node/Dockerfile)
+- [8.5-debian](https://github.com/kool-dev/docker-php/blob/master/8.5-debian/Dockerfile) and [8.5-debian-prod](https://github.com/kool-dev/docker-php/blob/master/8.5-debian-prod/Dockerfile)
+- [8.5-debian-nginx](https://github.com/kool-dev/docker-php/blob/master/8.5-debian-nginx/Dockerfile) and [8.5-debian-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.5-debian-nginx-prod/Dockerfile)
 
 ### 8.4
 
 - [8.4](https://github.com/kool-dev/docker-php/blob/master/8.4/Dockerfile) and [8.4-prod](https://github.com/kool-dev/docker-php/blob/master/8.4-prod/Dockerfile)
 - [8.4-nginx](https://github.com/kool-dev/docker-php/blob/master/8.4-nginx/Dockerfile) and [8.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.4-nginx-prod/Dockerfile)
+- [8.4-node](https://github.com/kool-dev/docker-php/blob/master/8.4-node/Dockerfile)
+- [8.4-debian](https://github.com/kool-dev/docker-php/blob/master/8.4-debian/Dockerfile) and [8.4-debian-prod](https://github.com/kool-dev/docker-php/blob/master/8.4-debian-prod/Dockerfile)
+- [8.4-debian-nginx](https://github.com/kool-dev/docker-php/blob/master/8.4-debian-nginx/Dockerfile) and [8.4-debian-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.4-debian-nginx-prod/Dockerfile)
 
 ### 8.3
 
 - [8.3](https://github.com/kool-dev/docker-php/blob/master/8.3/Dockerfile) and [8.3-prod](https://github.com/kool-dev/docker-php/blob/master/8.3-prod/Dockerfile)
 - [8.3-nginx](https://github.com/kool-dev/docker-php/blob/master/8.3-nginx/Dockerfile) and [8.3-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.3-nginx-prod/Dockerfile)
+- [8.3-node](https://github.com/kool-dev/docker-php/blob/master/8.3-node/Dockerfile)
 
 ### 8.2
 
 - [8.2](https://github.com/kool-dev/docker-php/blob/master/8.2/Dockerfile) and [8.2-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-prod/Dockerfile)
 - [8.2-nginx](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx/Dockerfile) and [8.2-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.2-nginx-prod/Dockerfile)
-
-### 8.1
-
-- [8.1](https://github.com/kool-dev/docker-php/blob/master/8.1/Dockerfile) and [8.1-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-prod/Dockerfile)
-- [8.1-nginx](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx/Dockerfile) and [8.1-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.1-nginx-prod/Dockerfile)
+- [8.2-node](https://github.com/kool-dev/docker-php/blob/master/8.2-node/Dockerfile)
 
 ### Legacy versions
 
-- [8.0](https://github.com/kool-dev/docker-php/blob/master/8.0/Dockerfile), [8.0-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-prod/Dockerfile), [8.0-nginx](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx/Dockerfile), [8.0-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/8.0-nginx-prod/Dockerfile)
-- [7.4](https://github.com/kool-dev/docker-php/blob/master/7.4/Dockerfile), [7.4-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-prod/Dockerfile), [7.4-nginx](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx/Dockerfile), [7.4-nginx-prod](https://github.com/kool-dev/docker-php/blob/master/7.4-nginx-prod/Dockerfile).
+PHP 8.1, 8.0, and 7.4 are end-of-life upstream. Their tags remain on [Docker Hub](https://hub.docker.com/r/kooldev/php/tags), but are no longer built from this repository and receive no updates. Upgrade to a supported PHP version for new deployments.
 
 ## More flavours
 
@@ -101,27 +105,27 @@ Variable | Default Value | Description
 With `docker run`:
 
 ```sh
-docker run -it --rm kooldev/php:7.4 php -v
+docker run -it --rm kooldev/php:8.5 php -v
 ```
 
 With environment variables:
 
 ```sh
-docker run -it --rm -e ENABLE_XDEBUG=true kooldev/php:7.4-prod php -v
+docker run -it --rm -e ENABLE_XDEBUG=true kooldev/php:8.5 php -v
 ```
 
 With `docker-compose.yml`:
 
 ```yaml
 app:
-  image: kooldev/php:8.2
+  image: kooldev/php:8.5
   ports:
     - "9773:9773"
   volumes:
     - ".:/app:cached"
     - "$HOME/.ssh/id_rsa:/home/developer/.ssh/id_rsa:cached"
   environment:
-    ASUSER: "${$UID}"
+    ASUSER: "${UID:-1000}"
 ```
 
 ## Contributing
@@ -131,6 +135,17 @@ app:
 You should change `fwd-template.json` for configuration and `template` folder for the actual base templates.
 
 After any changes, we need to run `kool run template` to parse the templates and generate all versions folder/files.
+
+### Testing and publishing
+
+Run `bash scripts/test-image.sh 8.5` to test a locally built image (replace the tag for other variants). CI uses the same script for every image, building base images before their nginx and node variants so tests use the local base rather than a published tag.
+
+Pull requests build and test without publishing or accessing secrets. Pushes to `master`, weekly scheduled runs, and manual runs on `master` also publish multi-architecture images, with base images published before derived images.
+
+Repository secrets:
+
+- `DOCKER_USERNAME` and `DOCKER_PASSWORD`: Docker Hub credentials for publishing images and syncing this README.
+- `DISPATCH_TOKEN`: token with access to the downstream repositories and permission to send repository dispatch events (fine-grained tokens need Contents write). Without it, CI publishes images but warns and skips downstream builds.
 
 ## License
 
