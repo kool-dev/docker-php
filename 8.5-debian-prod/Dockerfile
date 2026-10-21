@@ -21,7 +21,7 @@ RUN useradd -m -u 1337 kool \
     && usermod -aG www-data kool \
     # dockerize
     && DOCKERIZE_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
-    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.9.3/dockerize-linux-${DOCKERIZE_ARCH}-v0.9.3.tar.gz" | tar xz \
+    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.15.2/dockerize-linux-${DOCKERIZE_ARCH}-v0.15.2.tar.gz" | tar xz \
     && mv dockerize /usr/local/bin/dockerize \
     # gosu
     && GOSU_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
