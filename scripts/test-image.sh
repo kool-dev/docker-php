@@ -18,6 +18,10 @@ test "$(docker run --rm -e ASUSER=1000 "$image" id -u)" = 1000
 
 run dockerize --version
 run sh -c 'echo "{{ .Env.TEST_VAR }}" > /tmp/test.tmpl; TEST_VAR=hello dockerize -template /tmp/test.tmpl:/tmp/test.out; test "$(cat /tmp/test.out)" = hello'
+# The entrypoint runs dockerize as root, so only root may own it; and the
+# release tarball's LICENSE/README.md must not be left behind in /app.
+test "$(run stat -c %u:%g /usr/local/bin/dockerize)" = 0:0
+run sh -c 'test ! -e /app/LICENSE && test ! -e /app/README.md'
 
 # Read the module list once, and match whole names (e.g. zip, not gzip).
 modules=$(run php -m)

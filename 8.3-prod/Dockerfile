@@ -21,8 +21,7 @@ RUN adduser -D -u 1337 kool \
     && addgroup kool www-data \
     # dockerize
     && DOCKERIZE_ARCH="$( [ "$(uname -m)" = "aarch64" ] && echo arm64 || echo amd64 )" \
-    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.15.2/dockerize-linux-${DOCKERIZE_ARCH}-v0.15.2.tar.gz" | tar xz \
-    && mv dockerize /usr/local/bin/dockerize \
+    && curl -L "https://github.com/jwilder/dockerize/releases/download/v0.15.2/dockerize-linux-${DOCKERIZE_ARCH}-v0.15.2.tar.gz" | tar xz -C /usr/local/bin --no-same-owner dockerize \
     # deps
     && apk --no-cache add su-exec bash sed git openssh-client icu shadow procps \
         freetype libpng libjpeg-turbo libzip-dev ghostscript imagemagick \
