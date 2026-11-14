@@ -22,8 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Verify generated images match templates
+        # fwd's packaged Blade cache is not writable by arbitrary user IDs.
         run: |
-          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/app" fireworkweb/fwd:v1.0 fwd template
+          docker run --rm -v "$PWD:/app" fireworkweb/fwd:v1.0 fwd template
           git diff --exit-code
 
   build-test:
@@ -193,19 +194,24 @@ jobs:
           - kool-dev/docker-phpqa
     steps:
       - name: Check downstream credentials
-        id: credentials
         env:
-          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN || secrets.WORKFLOW_TOKEN }}
         run: |
-          if [ -n "$DISPATCH_TOKEN" ]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::Downstream builds skipped: configure DISPATCH_TOKEN with access to the downstream repositories."
+          if [ -z "$DISPATCH_TOKEN" ]; then
+            echo "::error::Downstream builds cannot be triggered: configure DISPATCH_TOKEN or WORKFLOW_TOKEN with access to the downstream repositories."
+            exit 1
           fi
       - name: Trigger ${{ matrix.repo }}
-        if: steps.credentials.outputs.available == 'true'
+        id: dispatch
         uses: peter-evans/repository-dispatch@v4
         with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
+          token: ${{ secrets.DISPATCH_TOKEN || secrets.WORKFLOW_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: docker-php-updated
+      - name: Record dispatch outcome
+        if: always()
+        env:
+          REPOSITORY: ${{ matrix.repo }}
+          OUTCOME: ${{ steps.dispatch.outcome }}
+        run: |
+          echo "- \`$REPOSITORY\`: docker-php-updated dispatch **$OUTCOME** (delivery is not downstream build completion)." >> "$GITHUB_STEP_SUMMARY"
