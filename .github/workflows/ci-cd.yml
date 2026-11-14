@@ -26,6 +26,8 @@ jobs:
       - name: Lint workflows
         run: |
           docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.11
+      - name: Test promotion against an ephemeral local registry
+        run: python3 scripts/registry_roundtrip.py
       - name: Verify generated images match templates
         # fwd's packaged Blade cache is not writable by arbitrary user IDs.
         run: |
@@ -71,6 +73,7 @@ jobs:
           context: ${{ env.BASE }}
           platforms: linux/${{ env.ARCH }}
           pull: true
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.BASE }}
       - name: Test base image
@@ -83,6 +86,7 @@ jobs:
         with:
           context: ${{ env.NGINX }}
           platforms: linux/${{ env.ARCH }}
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.NGINX }}
       - name: Test nginx image
@@ -99,6 +103,7 @@ jobs:
         with:
           context: ${{ env.NODE }}
           platforms: linux/${{ env.ARCH }}
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.NODE }}
       - name: Test node image
@@ -132,7 +137,19 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.BASE }}-${{ env.ARCH }}
-          path: release-metadata/*.json
+          path: release-metadata/${{ env.BASE }}-${{ env.ARCH }}.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.NGINX }}-${{ env.ARCH }}
+          path: release-metadata/${{ env.NGINX }}-${{ env.ARCH }}.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php' && matrix.distro == '' && matrix.type == ''
+        with:
+          name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.NODE }}-${{ env.ARCH }}
+          path: release-metadata/${{ env.NODE }}-${{ env.ARCH }}.json
           if-no-files-found: error
 
   publish:

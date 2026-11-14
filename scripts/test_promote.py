@@ -138,11 +138,14 @@ class WorkflowContracts(unittest.TestCase):
         self.assertEqual(derived_builds.count('python3 scripts/check_parent.py "$BASE" "$BASE_ID" "$IMAGE_ID"'), 2)
 
     def test_release_guards_and_current_attempt_artifacts(self):
-        self.assertEqual(self.workflow.count("if: " + self.guard), 5)
+        self.assertEqual(self.workflow.count("if: " + self.guard), 7)
         self.assertIn("needs: build-test", self.publish)
         self.assertIn("needs: publish", self.workflow)
         self.assertIn("actions/upload-artifact@v7.0.2", self.build)
         self.assertIn("php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.BASE }}-${{ env.ARCH }}", self.build)
+        for variant in ("BASE", "NGINX", "NODE"):
+            self.assertIn("name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env." + variant + " }}-${{ env.ARCH }}", self.build)
+            self.assertIn("path: release-metadata/${{ env." + variant + " }}-${{ env.ARCH }}.json", self.build)
         self.assertIn("actions/download-artifact@v8.0.2", self.publish)
         self.assertIn("pattern: php-${{ github.run_id }}-${{ github.run_attempt }}-*", self.publish)
         self.assertLess(self.publish.index("promote.py validate"), self.publish.index("docker/login-action"))
