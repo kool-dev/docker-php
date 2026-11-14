@@ -21,6 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Test publication contracts
+        run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Lint workflows
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.11
+      - name: Test promotion against an ephemeral local registry
+        run: python3 scripts/registry_roundtrip.py
       - name: Verify generated images match templates
         # fwd's packaged Blade cache is not writable by arbitrary user IDs.
         run: |
@@ -29,10 +36,13 @@ jobs:
 
   build-test:
     needs: checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.native.runner }}
     strategy:
       fail-fast: false
       matrix:
+        native:
+          - {arch: amd64, runner: ubuntu-24.04}
+          - {arch: arm64, runner: ubuntu-24.04-arm}
         version: ["8.2", "8.3", "8.4", "8.5"]
         distro: ["", "-debian"]
         type: ["", "-prod"]
@@ -43,145 +53,128 @@ jobs:
       BASE: ${{ matrix.version }}${{ matrix.distro }}${{ matrix.type }}
       NGINX: ${{ matrix.version }}${{ matrix.distro }}-nginx${{ matrix.type }}
       NODE: ${{ matrix.version }}-node
+      ARCH: ${{ matrix.native.arch }}
     steps:
       - uses: actions/checkout@v7
-
-      # The docker driver lets derived images use the base built in this job.
-      # Tests are native amd64; QEMU is only needed for multi-arch publishing.
+      # The docker driver resolves derived FROMs to the fresh same-job base.
       - uses: docker/setup-buildx-action@v4
         with:
           driver: docker
-
+      - name: Verify native architecture
+        run: |
+          case "$ARCH:$(uname -m)" in
+            amd64:x86_64|arm64:aarch64) ;;
+            *) echo "::error::Not a native $ARCH runner"; exit 1 ;;
+          esac
       - name: Build base image
+        id: base
         uses: docker/build-push-action@v7
         with:
           context: ${{ env.BASE }}
+          platforms: linux/${{ env.ARCH }}
+          pull: true
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.BASE }}
-
       - name: Test base image
-        run: bash scripts/test-image.sh "$BASE"
-
+        env:
+          IMAGE_ID: ${{ steps.base.outputs.imageid }}
+        run: bash scripts/test-image.sh "$BASE" "$IMAGE_ID"
       - name: Build nginx image
+        id: nginx
         uses: docker/build-push-action@v7
         with:
           context: ${{ env.NGINX }}
+          platforms: linux/${{ env.ARCH }}
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.NGINX }}
-
       - name: Test nginx image
-        run: bash scripts/test-image.sh "$NGINX"
-
+        env:
+          IMAGE_ID: ${{ steps.nginx.outputs.imageid }}
+          BASE_ID: ${{ steps.base.outputs.imageid }}
+        run: |
+          python3 scripts/check_parent.py "$BASE" "$BASE_ID" "$IMAGE_ID"
+          bash scripts/test-image.sh "$NGINX" "$IMAGE_ID"
       - name: Build node image
+        id: node
         if: matrix.distro == '' && matrix.type == ''
         uses: docker/build-push-action@v7
         with:
           context: ${{ env.NODE }}
+          platforms: linux/${{ env.ARCH }}
+          provenance: false
           load: true
           tags: kooldev/php:${{ env.NODE }}
-
       - name: Test node image
         if: matrix.distro == '' && matrix.type == ''
-        run: bash scripts/test-image.sh "$NODE"
+        env:
+          IMAGE_ID: ${{ steps.node.outputs.imageid }}
+          BASE_ID: ${{ steps.base.outputs.imageid }}
+        run: |
+          python3 scripts/check_parent.py "$BASE" "$BASE_ID" "$IMAGE_ID"
+          bash scripts/test-image.sh "$NODE" "$IMAGE_ID"
+      # No registry credentials, staging pushes or release artifacts on PRs,
+      # forks or manually dispatched feature branches.
+      - uses: docker/login-action@v4
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Stage tested images by immutable image ID
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        env:
+          BASE_ID: ${{ steps.base.outputs.imageid }}
+          NGINX_ID: ${{ steps.nginx.outputs.imageid }}
+          NODE_ID: ${{ steps.node.outputs.imageid }}
+        run: |
+          python3 scripts/promote.py stage "$BASE" "$ARCH" "$BASE_ID"
+          python3 scripts/promote.py stage "$NGINX" "$ARCH" "$NGINX_ID"
+          if [ -n "$NODE_ID" ]; then
+            python3 scripts/promote.py stage "$NODE" "$ARCH" "$NODE_ID"
+          fi
+      - uses: actions/upload-artifact@v7.0.2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.BASE }}-${{ env.ARCH }}
+          path: release-metadata/${{ env.BASE }}-${{ env.ARCH }}.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
+        with:
+          name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.NGINX }}-${{ env.ARCH }}
+          path: release-metadata/${{ env.NGINX }}-${{ env.ARCH }}.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php' && matrix.distro == '' && matrix.type == ''
+        with:
+          name: php-${{ github.run_id }}-${{ github.run_attempt }}-${{ env.NODE }}-${{ env.ARCH }}
+          path: release-metadata/${{ env.NODE }}-${{ env.ARCH }}.json
+          if-no-files-found: error
 
-  # Multi-arch builds use the isolated docker-container driver. Publish all
-  # base images first so nginx/node builds can pull them from Docker Hub.
-  push-base:
+  publish:
     needs: build-test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: ["8.2", "8.3", "8.4", "8.5"]
-        distro: ["", "-debian"]
-        type: ["", "-prod"]
-        exclude:
-          - {version: "8.2", distro: "-debian"}
-          - {version: "8.3", distro: "-debian"}
-    env:
-      TAG: ${{ matrix.version }}${{ matrix.distro }}${{ matrix.type }}
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: docker/setup-qemu-action@v4
+      - uses: actions/download-artifact@v8.0.2
         with:
-          platforms: arm64
+          pattern: php-${{ github.run_id }}-${{ github.run_attempt }}-*
+          path: release-metadata
+      # Validate the entire release before even logging into the registry.
+      - name: Validate all 28 tags and both architectures
+        run: python3 scripts/promote.py validate
       - uses: docker/setup-buildx-action@v4
       - uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Publish base image
-        uses: docker/build-push-action@v7
-        with:
-          context: ${{ env.TAG }}
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: kooldev/php:${{ env.TAG }}
-
-  push-nginx:
-    needs: push-base
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: ["8.2", "8.3", "8.4", "8.5"]
-        distro: ["", "-debian"]
-        type: ["", "-prod"]
-        exclude:
-          - {version: "8.2", distro: "-debian"}
-          - {version: "8.3", distro: "-debian"}
-    env:
-      TAG: ${{ matrix.version }}${{ matrix.distro }}-nginx${{ matrix.type }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: docker/setup-qemu-action@v4
-        with:
-          platforms: arm64
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Publish nginx image
-        uses: docker/build-push-action@v7
-        with:
-          context: ${{ env.TAG }}
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: kooldev/php:${{ env.TAG }}
-
-  push-node:
-    needs: push-base
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: ["8.2", "8.3", "8.4", "8.5"]
-    env:
-      TAG: ${{ matrix.version }}-node
-    steps:
-      - uses: actions/checkout@v7
-      - uses: docker/setup-qemu-action@v4
-        with:
-          platforms: arm64
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Publish node image
-        uses: docker/build-push-action@v7
-        with:
-          context: ${{ env.TAG }}
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: kooldev/php:${{ env.TAG }}
+      - name: Publish manifests only (no rebuild)
+        run: python3 scripts/promote.py publish
 
   trigger-downstream:
-    needs: [push-nginx, push-node]
+    needs: publish
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
     runs-on: ubuntu-latest
     strategy:

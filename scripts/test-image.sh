@@ -2,7 +2,12 @@
 set -euo pipefail
 
 tag=${1:?Usage: test-image.sh TAG}
-image="kooldev/php:$tag"
+image=${2:-"kooldev/php:$tag"}
+# CI supplies the build output ID: all probes and staging use that exact image.
+if [ "$#" -ge 2 ]; then
+    [[ "$image" =~ ^sha256:[0-9a-f]{64}$ ]]
+    test "$(docker image inspect "kooldev/php:$tag" --format '{{.Id}}')" = "$image"
+fi
 
 run() {
     docker run --rm "$image" "$@"
