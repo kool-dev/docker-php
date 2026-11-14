@@ -142,7 +142,7 @@ Run `bash scripts/test-image.sh 8.5` to test a locally built image (replace the 
 
 Pull requests build and test without publishing or accessing secrets. Pushes to `master`, weekly scheduled runs, and manual runs on `master` also publish multi-architecture images, with base images published before derived images.
 
-PHP owns the rebuild schedule. After publication it notifies WordPress, SQL Server, PHPQA, and Swoole via `docker-php-updated`. Swoole notifies OCI8 only after all its images are published, so OCI8 does not race its Swoole parents or rebuild twice for the same PHP refresh. Downstream repositories have no separate cron schedules. Failed notifications must be investigated and retried manually; an accepted dispatch is not confirmation of downstream publication.
+PHP owns the rebuild schedule. After publication it notifies WordPress, SQL Server, and Swoole via `docker-php-updated`. Swoole notifies OCI8 only after all its images are published, so OCI8 does not race its Swoole parents or rebuild twice for the same PHP refresh. PHPQA is discontinued and no longer receives rebuild notifications. Downstream repositories have no separate cron schedules. Failed notifications must be investigated and retried manually; an accepted dispatch is not confirmation of downstream publication.
 
 Repository or inherited organization secrets:
 

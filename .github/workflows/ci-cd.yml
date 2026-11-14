@@ -191,7 +191,6 @@ jobs:
           - kool-dev/docker-wordpress
           - kool-dev/docker-php-sqlsrv
           - kool-dev/docker-php-swoole
-          - kool-dev/docker-phpqa
     steps:
       - name: Check downstream credentials
         env:

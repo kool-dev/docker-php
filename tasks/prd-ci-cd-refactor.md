@@ -70,7 +70,7 @@ The core problem: multi-arch builds require the `docker-container` buildx driver
 - [x] Trigger: kool-dev/docker-wordpress
 - [x] Trigger: kool-dev/docker-php-sqlsrv
 - [x] Trigger: kool-dev/docker-php-swoole
-- [x] Trigger: kool-dev/docker-phpqa
+- [x] Trigger: kool-dev/docker-phpqa (retired on 2026-11-14; no longer dispatched)
 
 ## Functional Requirements
 
