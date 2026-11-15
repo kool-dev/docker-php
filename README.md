@@ -146,15 +146,7 @@ Pull requests, forks, and manual feature-branch runs never log in, stage images 
 
 Each tested tag uploads its registry digest in a `php-RUN_ID-RUN_ATTEMPT-VARIANT-ARCH` artifact. The final publication job requires every build/test group to succeed and downloads only the current attempt's metadata. It validates all 28 tags, exactly amd64 and arm64 per tag, repository, run scope, and digest format before changing any stable tag. Stable manifests reference those recorded digests; publication does not rebuild images or use QEMU. Dispatch starts only after every stable manifest succeeds.
 
-Stable-tag updates across 28 tags are not a registry transaction: a registry failure during publication can leave a partially promoted release, but never triggers downstream dispatch.
-
-If all native build/test/staging jobs succeeded and only publication or dispatch needs retrying, use **Resume publication** on `master`. Supply the original CI/CD `source_run` ID and its completed `source_attempt`. This downloads that attempt's complete metadata and republishes all manifests without builds, staging pushes or mixing attempts. It accepts only the latest trusted CI/CD run, its latest completed attempt, and the current default-branch commit. Failed/missing native jobs, expired artifacts, or stale source commits require a fresh full CI/CD run instead. Recovery shares CI/CD's release lock and dispatches downstream only after all manifests succeed; repeating recovery can repeat downstream notifications.
-
-For a normal CI/CD rerun, choose **Re-run all jobs**, not just failed jobs: a new attempt still requires its own complete metadata. Do not recover an older release over a newer one. No staging-tag cleanup is implemented.
-
-The publisher captures digests from Docker's push response and trusts platform/image-ID checks performed on the tested local images. It does not re-inspect every staged image remotely. Manifest assembly still reads Docker Hub and can hit the account's six-hour pull quota; use recovery only after quota becomes available. Its Docker driver also avoids booting a separate BuildKit container just to assemble manifests.
-
-To avoid redundant rollouts, merge receiver changes independently when possible. A receiver push already publishes; an immediately following PHP publication dispatches another complete receiver rebuild. Automatic push/parent triggers are retained for freshness, not silently skipped.
+**Rerun the entire workflow**, not just failed jobs: a new attempt cannot reuse metadata from an earlier attempt. Missing metadata fails closed before publication. Stable-tag updates across 28 tags are not a registry transaction: a registry failure during publication can leave a partially promoted release, but never triggers downstream dispatch. Investigate and rerun the whole workflow to recover.
 
 Run `python3 -m unittest discover -s scripts -p 'test_*.py' -v` for the mocked publication and workflow contracts. `python3 scripts/registry_roundtrip.py` exercises real staging and manifest publication against an ephemeral loopback registry with tiny synthetic images for both platforms; it verifies the registry config digests against the original local image exports. It never pushes to Docker Hub and is not a PHP runtime test. CI also runs this registry test, actionlint, and the real template generator before native builds.
 

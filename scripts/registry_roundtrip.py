@@ -72,26 +72,6 @@ def main():
                                     archive.extractfile(config).read()).hexdigest()
                             promote.stage(tag, arch, image_id, metadata)
                     records = promote.validate(metadata)
-                    # Simulate a registry outage after one stable update, then
-                    # recover with the same complete immutable artifact set.
-                    real_run = promote.run
-                    writes = []
-
-                    def interrupted(*args):
-                        if args[:3] == ("buildx", "imagetools", "create"):
-                            if writes:
-                                raise RuntimeError("simulated registry outage")
-                            writes.append(args)
-                        return real_run(*args)
-
-                    with patch.object(promote, "run", side_effect=interrupted):
-                        try:
-                            promote.publish(metadata)
-                        except RuntimeError as error:
-                            assert str(error) == "simulated registry outage"
-                        else:
-                            raise AssertionError("Expected interrupted publication")
-                    assert len(writes) == 1
                     # Exercise the production publish function without mocking Docker.
                     promote.publish(metadata)
                     for tag in sorted(tags):
