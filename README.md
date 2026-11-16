@@ -144,7 +144,7 @@ CI builds and tests all 28 variants once per architecture on native `ubuntu-24.0
 
 Pull requests, forks, and manual feature-branch runs never log in, stage images on Docker Hub, upload release metadata, publish stable images, or dispatch. Only trusted `master` runs (push, weekly schedule, or manual) stage the tested IDs under run/attempt-scoped tags. These temporary tags do not overwrite stable architecture tags. Staging tags remain in the registry; cleanup is not part of this workflow.
 
-Shared Bash/`jq` actions and the reusable publisher live in [kool-dev/action](https://github.com/kool-dev/action/blob/master/image-ci.md). All consumers pin the same immutable tooling commit in their workflow. Repo-specific builds and runtime tests stay here; shared parent-ID/layer checks, staging and publication have no Python dependency.
+CI uses [shared Bash/`jq` actions](https://github.com/kool-dev/action/blob/master/image-ci.md), pinned in the workflow. PHP builds and runtime tests stay here.
 
 Each native group uploads tested IDs/platforms and push digests in an `images-RUN_ID-RUN_ATTEMPT-GROUP-ARCH` artifact. The final publication job requires every group to succeed and downloads only the current attempt's metadata. It validates all 28 tags, exactly amd64 and arm64 per tag, repository, scope and digest format before changing any stable tag. Stable manifests reference those recorded digests; publication never rebuilds or uses QEMU. Dispatch starts only after every stable manifest succeeds.
 

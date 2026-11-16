@@ -46,7 +46,7 @@ jobs:
       ARCH: ${{ matrix.platform.arch }}
     steps:
       - uses: actions/checkout@v7
-      - uses: kool-dev/action/image-build@c1a0de73a81d63b9b1da74001afd60aa5573470a
+      - uses: kool-dev/action/image-build@6a6d04e8d1e1c66afc178e32c7d77d76169c7717
         with:
           arch: ${{ env.ARCH }}
       - name: Build fresh base
@@ -72,7 +72,7 @@ jobs:
           provenance: false
           load: true
           tags: kooldev/php:${{ env.NGINX }}
-      - uses: kool-dev/action/image-parent@c1a0de73a81d63b9b1da74001afd60aa5573470a
+      - uses: kool-dev/action/image-parent@6a6d04e8d1e1c66afc178e32c7d77d76169c7717
         with:
           base-ref: kooldev/php:${{ env.BASE }}
           base-id: ${{ steps.base.outputs.imageid }}
@@ -91,7 +91,7 @@ jobs:
           provenance: false
           load: true
           tags: kooldev/php:${{ env.NODE }}
-      - uses: kool-dev/action/image-parent@c1a0de73a81d63b9b1da74001afd60aa5573470a
+      - uses: kool-dev/action/image-parent@6a6d04e8d1e1c66afc178e32c7d77d76169c7717
         if: matrix.distro == '' && matrix.type == ''
         with:
           base-ref: kooldev/php:${{ env.BASE }}
@@ -113,7 +113,7 @@ jobs:
             --arg bid "$BASE_ID" --arg nid "$NGINX_ID" --arg oid "$NODE_ID" \
             '[{tag:$base,id:$bid},{tag:$nginx,id:$nid}] + if $oid == "" then [] else [{tag:$node,id:$oid}] end')
           echo "images=$images" >> "$GITHUB_OUTPUT"
-      - uses: kool-dev/action/image-stage@c1a0de73a81d63b9b1da74001afd60aa5573470a
+      - uses: kool-dev/action/image-stage@6a6d04e8d1e1c66afc178e32c7d77d76169c7717
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
         with:
           canonical-repository: kool-dev/docker-php
@@ -127,16 +127,16 @@ jobs:
   publish:
     needs: [checks, build]
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
-    uses: kool-dev/action/.github/workflows/image-publish.yml@c1a0de73a81d63b9b1da74001afd60aa5573470a
-    with:
-      canonical-repository: kool-dev/docker-php
-      default-branch: master
-      repository: kooldev/php
-      tags: ${{ needs.checks.outputs.tags }}
-      tooling-ref: c1a0de73a81d63b9b1da74001afd60aa5573470a
-    secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: kool-dev/action/image-publish@6a6d04e8d1e1c66afc178e32c7d77d76169c7717
+        with:
+          canonical-repository: kool-dev/docker-php
+          default-branch: master
+          repository: kooldev/php
+          tags: ${{ needs.checks.outputs.tags }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
   trigger-downstream:
     needs: publish
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.repository == 'kool-dev/docker-php'
