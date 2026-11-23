@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.6-fpm-alpine
 
 ENV ASUSER= \
     UID= \
