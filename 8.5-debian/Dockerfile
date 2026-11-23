@@ -1,4 +1,4 @@
-FROM php:8.5-fpm-bookworm
+FROM php:8.6-fpm-bookworm
 
 ENV ASUSER= \
     UID= \
